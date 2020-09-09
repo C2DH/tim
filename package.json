@@ -8,9 +8,14 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "emotion": "^10.0.27",
+    "prismjs": "^1.21.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "slate": "^0.58.4",
+    "slate-history": "^0.58.4",
+    "slate-react": "^0.58.4"
   },
   "scripts": {
     "start": "react-scripts start",

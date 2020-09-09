@@ -1,23 +1,32 @@
 import React from 'react';
-import { Flex, View, ActionGroup, Item } from '@adobe/react-spectrum';
+import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 import Comment from '@spectrum-icons/workflow/Comment';
 import Clock from '@spectrum-icons/workflow/Clock';
 import TextParagraph from '@spectrum-icons/workflow/TextParagraph';
 import ViewList from '@spectrum-icons/workflow/ViewList';
 import FileTxt from '@spectrum-icons/workflow/FileTxt';
 
+import Editor from './components/Editor';
+
 import './App.css';
 
 function App() {
   return (
     <Flex direction="column" gap="size-100" minHeight="100vh">
-      <View backgroundColor="celery-600" height="size-800" />
+      <View backgroundColor="celery-600" height="size-800">
+        player, etc.
+      </View>
+      <View>
+        <ActionGroup selectionMode="single" defaultSelectedKeys={['notes']}>
+          <Item key="notes">Notes</Item>
+          <Item key="metadata">Metadata</Item>
+        </ActionGroup>
+      </View>
       <Flex direction="row" gap="size-100" flex>
         <View flex>
-          <ActionGroup selectionMode="multiple" defaultSelectedKeys={['notes']}>
-            <Item key="notes">Notes</Item>
-            <Item key="metadata">Metadata</Item>
-          </ActionGroup>
+          <Content margin="size-100">
+            <Editor />
+          </Content>
         </View>
         <View width="size-5000">
           <ActionGroup orientation="vertical">
@@ -39,7 +48,9 @@ function App() {
           </ActionGroup>
         </View>
       </Flex>
-      <View backgroundColor="magenta-600" height="size-800" />
+      <View backgroundColor="magenta-600" height="size-800">
+        footer
+      </View>
     </Flex>
   );
 }
