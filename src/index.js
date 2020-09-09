@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider, defaultTheme } from '@adobe/react-spectrum';
+
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import './index.css';
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider theme={defaultTheme} colorScheme="light">
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
