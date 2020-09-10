@@ -58,6 +58,7 @@ function App() {
           </Content>
         </View>
         <View width="size-5000">
+          <Player />
           <ActionGroup orientation="vertical">
             <Item key="transcript" aria-label="Transcript">
               <Comment />
@@ -75,12 +76,9 @@ function App() {
               <FileTxt />
             </Item>
           </ActionGroup>
-          <Player />
         </View>
       </Flex>
-      <View backgroundColor="magenta-600" height="size-800">
-        footer
-      </View>
+      <View height="size-800">(footer)</View>
     </Flex>
   );
 }

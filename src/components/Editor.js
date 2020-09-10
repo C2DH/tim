@@ -124,9 +124,11 @@ const Editor = () => {
   // console.log(value);
 
   return (
-    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
-      <Editable decorate={decorate} renderLeaf={renderLeaf} placeholder="Write some markdown..." />
-    </Slate>
+    <div onClick={e => console.log(e.nativeEvent)}>
+      <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+        <Editable decorate={decorate} renderLeaf={renderLeaf} placeholder="Write some markdown..." />
+      </Slate>
+    </div>
   );
 };
 
