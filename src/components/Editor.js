@@ -14,11 +14,11 @@ import { css } from 'emotion';
       { pattern: /``.+?``|`[^`\n]+`/, alias: 'keyword' },
     ],
     title: [
-      {
-        pattern: /\w+.*(?:\r?\n|\r)(?:==+|--+)/,
-        alias: 'important',
-        inside: { punctuation: /==+$|--+$/ },
-      },
+      // {
+      //   pattern: /\w+.*(?:\r?\n|\r)(?:==+|--+)/,
+      //   alias: 'important',
+      //   inside: { punctuation: /==+$|--+$/ },
+      // },
       {
         pattern: /(^\s*)#+.+/m,
         lookbehind: !0,
@@ -36,15 +36,15 @@ import { css } from 'emotion';
       lookbehind: !0,
       alias: 'punctuation',
     },
-    'url-reference': {
-      pattern: /!?\[[^\]]+\]:[\t ]+(?:\S+|<(?:\\.|[^>\\])+>)(?:[\t ]+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\)))?/,
-      inside: {
-        variable: { pattern: /^(!?\[)[^\]]+/, lookbehind: !0 },
-        string: /(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\))$/,
-        punctuation: /^[\[\]!:]|[<>]/,
-      },
-      alias: 'url',
-    },
+    // 'url-reference': {
+    //   pattern: /!?\[[^\]]+\]:[\t ]+(?:\S+|<(?:\\.|[^>\\])+>)(?:[\t ]+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\)))?/,
+    //   inside: {
+    //     variable: { pattern: /^(!?\[)[^\]]+/, lookbehind: !0 },
+    //     string: /(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\((?:\\.|[^)\\])*\))$/,
+    //     punctuation: /^[\[\]!:]|[<>]/,
+    //   },
+    //   alias: 'url',
+    // },
     bold: {
       pattern: /(^|[^\\])(\*\*|__)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/,
       lookbehind: !0,
@@ -56,15 +56,27 @@ import { css } from 'emotion';
       inside: { punctuation: /^[*_]|[*_]$/ },
     },
     timecode: {
-      pattern: /\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/,
+      pattern: /\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s*\w)/,
       lookbehind: !0,
-      inside: { punctuation: /^[*_]|[*_]$/ },
+      // inside: { punctuation: /^[*_]|[*_]$/ },
+      // alias: "timecode"
+    },
+    timecodeL: {
+      pattern: /(?<!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=$)/,
+      lookbehind: !0,
+      // inside: { punctuation: /^[*_]|[*_]$/ },
+      // alias: "timecode"
+    },
+    timecode3: {
+      pattern: /^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s*$)/,
+      lookbehind: !0,
+      // inside: { punctuation: /^[*_]|[*_]$/ },
       // alias: "timecode"
     },
     timecode2: {
       pattern: /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/,
       lookbehind: !0,
-      inside: { punctuation: /^[*_]|[*_]$/ },
+      // inside: { punctuation: /^[*_]|[*_]$/ },
     },
     url: {
       pattern: /!?\[[^\]]+\](?:\([^\s)]+(?:[\t ]+"(?:\\.|[^"\\])*")?\)| ?\[[^\]\n]*\])/,
@@ -179,11 +191,26 @@ const Leaf = ({ attributes, children, leaf }) => {
           background-color: lightblue;
           padding: 3px;
         `}
+        ${leaf.timecodeL &&
+        css`
+          font-family: monospace;
+          background-color: lightblue;
+          padding: 3px;
+        `}
             ${leaf.timecode2 &&
         css`
           font-family: monospace;
           background-color: lightpink;
           padding: 3px;
+        `}
+          ${leaf.timecode3 &&
+        css`
+          font-family: monospace;
+          background-color: red;
+          display: inline-block;
+          font-weight: bold;
+          font-size: 20px;
+          margin: 20px 0 10px 0;
         `}
       `}
     >
@@ -202,7 +229,35 @@ const initialValue = [
   {
     children: [
       {
-        text: 'Timecode 00:02:34 lorem ipsum [00:02:34] dolor sit amet',
+        text: 'Timecodes just text 00:02:34 with brackets in the middle [00:02:34] of text',
+      },
+    ],
+  },
+  {
+    children: [
+      {
+        text: '[00:02:34] at beginning',
+      },
+    ],
+  },
+  {
+    children: [
+      {
+        text: 'at the end [00:02:34]',
+      },
+    ],
+  },
+  {
+    children: [
+      {
+        text: 'alone on its line as delimiter:',
+      },
+    ],
+  },
+  {
+    children: [
+      {
+        text: '[00:02:34]',
       },
     ],
   },
