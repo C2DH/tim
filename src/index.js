@@ -1,16 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider, defaultTheme } from '@adobe/react-spectrum';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { Provider as SpectrumProvider, defaultTheme } from '@adobe/react-spectrum';
 
 import App from './App';
+import { configureAppStore } from './configureStore';
 import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
+const store = configureAppStore({});
+
 ReactDOM.render(
   <React.StrictMode>
-    <Provider theme={defaultTheme} colorScheme="light">
-      <App />
+    <Provider store={store}>
+      <SpectrumProvider theme={defaultTheme} colorScheme="light">
+        <Router>
+          <App />
+        </Router>
+      </SpectrumProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import { Flex, View, Content, ActionGroup, Item, ActionButton, MenuTrigger, Menu, Text } from '@adobe/react-spectrum';
 
 import Play from '@spectrum-icons/workflow/Play';
@@ -14,11 +15,15 @@ import ViewList from '@spectrum-icons/workflow/ViewList';
 import FileTxt from '@spectrum-icons/workflow/FileTxt';
 
 import Editor from './components/Editor';
+import Metadata from './components/Metadata';
 import Player from './components/Player';
 
 import './App.css';
 
-function App() {
+const App = () => {
+  let history = useHistory();
+  console.log(history);
+
   return (
     <Flex direction="column" gap="size-100" minHeight="100vh">
       <View height="size-800">
@@ -46,7 +51,11 @@ function App() {
         </ActionGroup>
       </View>
       <View>
-        <ActionGroup selectionMode="single" defaultSelectedKeys={['notes']}>
+        <ActionGroup
+          selectionMode="single"
+          defaultSelectedKeys={['notes']}
+          onAction={action => history.push(action === 'notes' ? '/' : '/metadata')}
+        >
           <Item key="notes">Notes</Item>
           <Item key="metadata">Metadata</Item>
         </ActionGroup>
@@ -54,7 +63,14 @@ function App() {
       <Flex direction="row" gap="size-100" flex>
         <View flex>
           <Content margin="size-100">
-            <Editor />
+            <Switch>
+              <Route exact path="/">
+                <Editor />
+              </Route>
+              <Route path="/metadata">
+                <Metadata />
+              </Route>
+            </Switch>
           </Content>
         </View>
         <View width="size-5000">
@@ -81,6 +97,6 @@ function App() {
       <View height="size-800">(footer)</View>
     </Flex>
   );
-}
+};
 
 export default App;
