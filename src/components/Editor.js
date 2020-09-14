@@ -1,10 +1,13 @@
 /* eslint no-unused-expressions: 0 */
 import Prism from 'prismjs';
 import React, { useState, useCallback, useMemo } from 'react';
+import { connect } from 'react-redux';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Node, Text, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import { css } from 'emotion';
+
+import { update } from '../reducers/data';
 
 (Prism.languages.markdown = Prism.languages.extend('markup', {})),
   Prism.languages.insertBefore('markdown', 'prolog', {
@@ -91,8 +94,8 @@ import { css } from 'emotion';
   (Prism.languages.markdown.bold.inside.italic = Prism.util.clone(Prism.languages.markdown.italic)),
   (Prism.languages.markdown.italic.inside.bold = Prism.util.clone(Prism.languages.markdown.bold));
 
-const Editor = () => {
-  const [value, setValue] = useState(initialValue);
+const Editor = ({ data, update }) => {
+  console.log({ data });
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const decorate = useCallback(([node, path]) => {
@@ -133,11 +136,9 @@ const Editor = () => {
     return ranges;
   }, []);
 
-  // console.log(value);
-
   return (
     <div onClick={e => console.log(e.nativeEvent)}>
-      <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+      <Slate editor={editor} value={data.editor} onChange={value => update({ editor: value })}>
         <Editable decorate={decorate} renderLeaf={renderLeaf} placeholder="Write some markdown..." />
       </Slate>
     </div>
@@ -219,76 +220,4 @@ const Leaf = ({ attributes, children, leaf }) => {
   );
 };
 
-const initialValue = [
-  {
-    children: [{ text: '# Title' }],
-  },
-  {
-    children: [{ text: '## Synopsis?' }],
-  },
-  {
-    children: [
-      {
-        text: 'Timecodes just text 00:02:34 with brackets in the middle [00:02:34] of text',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: '[00:02:34] at beginning',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: 'at the end [00:02:34]',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: 'alone on its line as delimiter:',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: '[00:02:34]',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: '---',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: 'Markdown: **bold** and _italic_ and `code`',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: '> quote [00:02:34]',
-      },
-    ],
-  },
-  {
-    children: [
-      {
-        text: 'List\n* one 00:02:34\n* two\n* four\n* three',
-      },
-    ],
-  },
-];
-
-export default Editor;
+export default connect(({ data }) => ({ data }), { update })(Editor);
