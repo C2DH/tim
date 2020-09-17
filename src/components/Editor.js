@@ -111,10 +111,25 @@ const progressState = atom({
   default: 0,
 });
 
-const Editor = ({ data, update }) => {
+const Editor = ({ data, update, player }) => {
   const progress = useRecoilValue(progressState);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
+  const handleClick = useCallback(event => {
+    const target = event.nativeEvent.srcElement;
+    if (target.nodeName === 'SPAN') {
+      const text = target.innerText.replace(/\[|\]/g, '').trim();
+      let tc = null;
+
+      try {
+        tc = timecode(`${text}:00`, 1e3);
+      } catch (ignored) {}
+
+      tc && seekTo(tc.frameCount / 1e3);
+    }
+  }, []);
 
   const decorate = useCallback(([node, path]) => {
     const ranges = [];
@@ -155,7 +170,7 @@ const Editor = ({ data, update }) => {
   }, []);
 
   return (
-    <div onClick={e => console.log(e.nativeEvent)}>
+    <div onClick={handleClick}>
       <Slate editor={editor} value={data.editor} onChange={value => update({ editor: value })}>
         <Editable
           decorate={decorate}

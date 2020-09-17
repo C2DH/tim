@@ -41,24 +41,28 @@ const Leaf = ({ attributes, children, leaf }) => {
           font-family: monospace;
           background-color: #eee;
           padding: 3px;
+          cursor: pointer;
         `}
         ${leaf.timecode &&
         css`
           font-family: monospace;
           background-color: lightblue;
           padding: 3px;
+          cursor: pointer;
         `}
         ${leaf.timecodeL &&
         css`
           font-family: monospace;
           background-color: lightblue;
           padding: 3px;
+          cursor: pointer;
         `}
         ${leaf.timecode2 &&
         css`
           font-family: monospace;
           background-color: lightpink;
           padding: 3px;
+          cursor: pointer;
         `}
         ${leaf.timecode3 &&
         css`
@@ -68,6 +72,7 @@ const Leaf = ({ attributes, children, leaf }) => {
           font-weight: bold;
           font-size: 20px;
           margin: 20px 0 10px 0;
+          cursor: pointer;
         `}
       `}
     >

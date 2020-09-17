@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import { Flex, View, Content, ActionGroup, Item, ActionButton, MenuTrigger, Menu, Text } from '@adobe/react-spectrum';
 
@@ -16,13 +16,13 @@ import Player from './components/Player';
 import './App.css';
 
 const App = () => {
-  let history = useHistory();
-  console.log(history);
+  const history = useHistory();
+  const player = useRef(null);
 
   return (
     <Flex direction="column" gap="size-100" minHeight="100vh">
       <View height="size-800">
-        <Transport />
+        <Transport player={player} />
       </View>
       <View>
         <ActionGroup
@@ -39,7 +39,7 @@ const App = () => {
           <Content margin="size-100">
             <Switch>
               <Route exact path="/">
-                <Editor />
+                <Editor player={player} />
               </Route>
               <Route path="/metadata">
                 <Metadata />
@@ -48,7 +48,7 @@ const App = () => {
           </Content>
         </View>
         <View width="size-5000">
-          <Player />
+          <Player ref={player} />
           <ActionGroup orientation="vertical">
             <Item key="transcript" aria-label="Transcript">
               <Comment />

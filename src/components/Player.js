@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { RecoilRoot, atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
@@ -22,16 +22,17 @@ const playState = atom({
   default: false,
 });
 
-const Player = () => {
+const Player = (props, ref) => {
   const [duration, setDuration] = useRecoilState(durationState);
   const [progress, setProgress] = useRecoilState(progressState);
   const [playing, setPlaying] = useRecoilState(playState);
 
   return (
-    <Draggable handle=".drag-handle" positionOffset={{ x: '50px', y: '0' }}>
+    <Draggable handle=".drag-handle" positionOffset={{ x: '50px', y: '0' }} forwardedRef={ref}>
       <ResizableBox width={300} height={194} minConstraints={[200, 113]} maxConstraints={[720, 480]}>
         <>
           <ReactPlayer
+            ref={ref}
             url="https://www.youtube.com/watch?v=efs3QRr8LWw"
             controls
             onDuration={d => setDuration(d)}
@@ -48,4 +49,4 @@ const Player = () => {
   );
 };
 
-export default Player;
+export default forwardRef(Player);

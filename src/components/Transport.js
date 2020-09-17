@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+/* eslint-disable no-unused-expressions */
+import React, { useEffect, useCallback } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { Flex, ProgressBar, ActionGroup, Item, MenuTrigger, Menu, ActionButton } from '@adobe/react-spectrum';
 import Play from '@spectrum-icons/workflow/Play';
@@ -24,10 +25,13 @@ const playState = atom({
   default: false,
 });
 
-const Timeline = () => {
+const Transport = ({ player }) => {
   const duration = useRecoilValue(durationState);
   const progress = useRecoilValue(progressState);
   const [playing, setPlaying] = useRecoilState(playState);
+
+  const ffw = useCallback(() => player.current?.seekTo(progress + 1, 'seconds'), [player, progress]);
+  const rwd = useCallback(() => player.current?.seekTo(progress - 1, 'seconds'), [player, progress]);
 
   const setAction = useCallback(
     action => {
@@ -38,12 +42,20 @@ const Timeline = () => {
         case 'pause':
           setPlaying(false);
           break;
+        case 'ffw':
+          ffw();
+          break;
+        case 'rwd':
+          rwd();
+          break;
         default:
-          console.log(action);
+          console.warn('unhandled action', action);
       }
     },
-    [setPlaying]
+    [setPlaying, rwd, ffw]
   );
+
+  console.log(player);
 
   return (
     <Flex direction="column" onClick={e => console.log(e)}>
@@ -80,4 +92,4 @@ const Timeline = () => {
   );
 };
 
-export default Timeline;
+export default Transport;
