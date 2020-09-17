@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { RecoilRoot } from 'recoil';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Provider as SpectrumProvider, defaultTheme } from '@adobe/react-spectrum';
@@ -14,13 +15,15 @@ const store = configureAppStore({});
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <SpectrumProvider theme={defaultTheme} colorScheme="light">
-        <Router>
-          <App />
-        </Router>
-      </SpectrumProvider>
-    </Provider>
+    <RecoilRoot>
+      <Provider store={store}>
+        <SpectrumProvider theme={defaultTheme} colorScheme="light">
+          <Router>
+            <App />
+          </Router>
+        </SpectrumProvider>
+      </Provider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );

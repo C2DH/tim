@@ -1,13 +1,18 @@
 /* eslint no-unused-expressions: 0 */
 import Prism from 'prismjs';
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
+
+import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
-import { Node, Text, createEditor } from 'slate';
+import { Text, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
-import { css } from 'emotion';
+
+import timecode from 'smpte-timecode';
 
 import { update } from '../reducers/data';
+import Leaf from './Leaf';
 
 (Prism.languages.markdown = Prism.languages.extend('markup', {})),
   Prism.languages.insertBefore('markdown', 'prolog', {
@@ -94,10 +99,23 @@ import { update } from '../reducers/data';
   (Prism.languages.markdown.bold.inside.italic = Prism.util.clone(Prism.languages.markdown.italic)),
   (Prism.languages.markdown.italic.inside.bold = Prism.util.clone(Prism.languages.markdown.bold));
 
+const HOTKEYS = {
+  'mod+j': 'time',
+  'ctrl+j': 'time',
+  'shift+mod+j': 'times',
+  'shift+ctrl+j': 'times',
+};
+
+const progressState = atom({
+  key: 'progressState',
+  default: 0,
+});
+
 const Editor = ({ data, update }) => {
-  console.log({ data });
+  const progress = useRecoilValue(progressState);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
   const decorate = useCallback(([node, path]) => {
     const ranges = [];
 
@@ -139,84 +157,42 @@ const Editor = ({ data, update }) => {
   return (
     <div onClick={e => console.log(e.nativeEvent)}>
       <Slate editor={editor} value={data.editor} onChange={value => update({ editor: value })}>
-        <Editable decorate={decorate} renderLeaf={renderLeaf} placeholder="Write some markdown..." />
+        <Editable
+          decorate={decorate}
+          renderLeaf={renderLeaf}
+          placeholder="Write some markdown…"
+          autoFocus
+          onKeyDown={event => {
+            for (const hotkey in HOTKEYS) {
+              if (isHotkey(hotkey, event)) {
+                event.preventDefault();
+
+                const mark = HOTKEYS[hotkey];
+
+                if (mark.startsWith('time')) {
+                  const tokens = [];
+
+                  mark === 'times' &&
+                    [3, 2, 1]
+                      .filter(delta => progress >= delta)
+                      .forEach(delta => {
+                        const tc = timecode((progress - delta) * 1e3, 1e3);
+                        const [hh, mm, ss, mmm] = tc.toString().split(':');
+                        tokens.push(`[${hh}:${mm}:${ss}]`);
+                      });
+
+                  const tc = timecode(progress * 1e3, 1e3);
+                  const [hh, mm, ss, mmm] = tc.toString().split(':');
+                  tokens.push(`[${hh}:${mm}:${ss}]`);
+
+                  editor.insertText(tokens.join(' '));
+                }
+              }
+            }
+          }}
+        />
       </Slate>
     </div>
-  );
-};
-
-const Leaf = ({ attributes, children, leaf }) => {
-  return (
-    <span
-      {...attributes}
-      className={css`
-        font-weight: ${leaf.bold && 'bold'};
-        font-style: ${leaf.italic && 'italic'};
-        text-decoration: ${leaf.underlined && 'underline'};
-        ${leaf.title &&
-        css`
-          display: inline-block;
-          font-weight: bold;
-          font-size: 20px;
-          margin: 20px 0 10px 0;
-        `}
-        ${leaf.list &&
-        css`
-          padding-left: 10px;
-          font-size: 20px;
-          line-height: 10px;
-        `}
-            ${leaf.hr &&
-        css`
-          display: block;
-          text-align: center;
-          border-bottom: 2px solid #ddd;
-        `}
-            ${leaf.blockquote &&
-        css`
-          display: inline-block;
-          border-left: 2px solid #ddd;
-          padding-left: 10px;
-          color: #aaa;
-          font-style: italic;
-        `}
-            ${leaf.code &&
-        css`
-          font-family: monospace;
-          background-color: #eee;
-          padding: 3px;
-        `}
-            ${leaf.timecode &&
-        css`
-          font-family: monospace;
-          background-color: lightblue;
-          padding: 3px;
-        `}
-        ${leaf.timecodeL &&
-        css`
-          font-family: monospace;
-          background-color: lightblue;
-          padding: 3px;
-        `}
-            ${leaf.timecode2 &&
-        css`
-          font-family: monospace;
-          background-color: lightpink;
-          padding: 3px;
-        `}
-          ${leaf.timecode3 &&
-        css`
-          font-family: monospace;
-          background-color: red;
-          display: inline-block;
-          font-weight: bold;
-          font-size: 20px;
-          margin: 20px 0 10px 0;
-        `}
-      `}
-    >
-      {children}
-    </span>
   );
 };
 

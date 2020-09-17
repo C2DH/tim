@@ -2,18 +2,13 @@ import React from 'react';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import { Flex, View, Content, ActionGroup, Item, ActionButton, MenuTrigger, Menu, Text } from '@adobe/react-spectrum';
 
-import Play from '@spectrum-icons/workflow/Play';
-import Rewind from '@spectrum-icons/workflow/Rewind';
-import FastForward from '@spectrum-icons/workflow/FastForward';
-
-import Fast from '@spectrum-icons/workflow/Fast';
-
 import Comment from '@spectrum-icons/workflow/Comment';
 import Clock from '@spectrum-icons/workflow/Clock';
 import TextParagraph from '@spectrum-icons/workflow/TextParagraph';
 import ViewList from '@spectrum-icons/workflow/ViewList';
 import FileTxt from '@spectrum-icons/workflow/FileTxt';
 
+import Transport from './components/Transport';
 import Editor from './components/Editor';
 import Metadata from './components/Metadata';
 import Player from './components/Player';
@@ -27,28 +22,7 @@ const App = () => {
   return (
     <Flex direction="column" gap="size-100" minHeight="100vh">
       <View height="size-800">
-        <ActionGroup isQuiet>
-          <Item key="play" aria-label="Play">
-            <Play />
-          </Item>
-          <Item key="rwd" aria-label="Rewind">
-            <Rewind />
-          </Item>
-          <Item key="ffw" aria-label="Fast Forward">
-            <FastForward />
-          </Item>
-          <Item key="speed" aria-label="Speed">
-            <MenuTrigger>
-              <ActionButton isQuiet>
-                <Fast />
-              </ActionButton>
-              <Menu>
-                <Item>1×</Item>
-                <Item>2×</Item>
-              </Menu>
-            </MenuTrigger>
-          </Item>
-        </ActionGroup>
+        <Transport />
       </View>
       <View>
         <ActionGroup
