@@ -66,9 +66,9 @@ const Leaf = ({ attributes, children, leaf }) => {
         `}
         ${leaf.timecode3 &&
         css`
+          border-top: 2px solid #ddd;
           font-family: monospace;
-          background-color: red;
-          display: inline-block;
+          display: block;
           font-weight: bold;
           font-size: 20px;
           margin: 20px 0 10px 0;

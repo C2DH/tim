@@ -2611,6 +2611,13 @@
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"
   integrity sha512-DetpxZw1fzPD5xUBrIAoplLChO2VB8DlL5Gg+I1IR9b2wPqYIca2WSUxL5g1vLeR4MsQq1NeWriXAVffV+U1Fw==
 
+"@spectrum-icons/illustrations@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@spectrum-icons/illustrations/-/illustrations-3.1.0.tgz#35b1dedbb3c749290725d27b0cef54e0a4ddfd52"
+  integrity sha512-ODDY1p9pCl+pHzfrRMVw+VEDw+4pBZsICYZW2+/Wy+eoChxHaP3vtYte62roTave7M51htkU7HOLnY8FNXIE+g==
+  dependencies:
+    "@adobe/react-spectrum-ui" "^1.0.0"
+
 "@spectrum-icons/ui@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@spectrum-icons/ui/-/ui-3.1.0.tgz#15ceb8a98f78f26c10a1045f60a60582f45ae846"
@@ -10417,10 +10424,10 @@ realpath-native@^1.1.0:
   dependencies:
     util.promisify "^1.0.0"
 
-recoil@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.0.11.tgz#3be3bfe8e62de94a98b8c292bb3243a176679a00"
-  integrity sha512-GgSi9rFUdpnCbmgyPztN9+9COIfc8NiEOc5oqjj4z2P9u4GvpDShS1K7sTuqaeYsRE9qUP5Lj0W6PHTDXcvXsg==
+recoil@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.0.13.tgz#23e6d63135c07d8defbd91aaa35dca94ec5c15a6"
+  integrity sha512-2OToaQ8GR//KsdKdaEhMi04QKStLGRpk3qjC58iBpZpUtsByZ4dUy2UJtRcYuhnVlltGZ8HNwcEQRdFOS864SQ==
 
 recursive-readdir@2.2.2:
   version "2.2.2"

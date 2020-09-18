@@ -40,6 +40,23 @@ const App = () => {
             <Switch>
               <Route exact path="/">
                 <Editor player={player} />
+                <ActionGroup orientation="vertical">
+                  <Item key="transcript" aria-label="Transcript">
+                    <Comment />
+                  </Item>
+                  <Item key="timecode" aria-label="Timecode">
+                    <Clock />
+                  </Item>
+                  <Item key="title" aria-label="Title">
+                    <TextParagraph />
+                  </Item>
+                  <Item key="keyword" aria-label="Keyword">
+                    <ViewList />
+                  </Item>
+                  <Item key="synopsis" aria-label="Synopsis">
+                    <FileTxt />
+                  </Item>
+                </ActionGroup>
               </Route>
               <Route path="/metadata">
                 <Metadata />
@@ -49,23 +66,6 @@ const App = () => {
         </View>
         <View width="size-5000">
           <Player ref={player} />
-          <ActionGroup orientation="vertical">
-            <Item key="transcript" aria-label="Transcript">
-              <Comment />
-            </Item>
-            <Item key="timecode" aria-label="Timecode">
-              <Clock />
-            </Item>
-            <Item key="title" aria-label="Title">
-              <TextParagraph />
-            </Item>
-            <Item key="keyword" aria-label="Keyword">
-              <ViewList />
-            </Item>
-            <Item key="synopsis" aria-label="Synopsis">
-              <FileTxt />
-            </Item>
-          </ActionGroup>
         </View>
       </Flex>
       <View height="size-800">(footer)</View>

@@ -14,6 +14,8 @@ import timecode from 'smpte-timecode';
 import { update } from '../reducers/data';
 import Leaf from './Leaf';
 
+import './Editor.css';
+
 (Prism.languages.markdown = Prism.languages.extend('markup', {})),
   Prism.languages.insertBefore('markdown', 'prolog', {
     blockquote: { pattern: /^>(?:[\t ]*>)*/m, alias: 'punctuation' },
@@ -117,19 +119,22 @@ const Editor = ({ data, update, player }) => {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
-  const handleClick = useCallback(event => {
-    const target = event.nativeEvent.srcElement;
-    if (target.nodeName === 'SPAN') {
-      const text = target.innerText.replace(/\[|\]/g, '').trim();
-      let tc = null;
+  const handleClick = useCallback(
+    event => {
+      const target = event.nativeEvent.srcElement;
+      if (target.nodeName === 'SPAN') {
+        const text = target.innerText.replace(/\[|\]/g, '').trim();
+        let tc = null;
 
-      try {
-        tc = timecode(`${text}:00`, 1e3);
-      } catch (ignored) {}
+        try {
+          tc = timecode(`${text}:00`, 1e3);
+        } catch (ignored) {}
 
-      tc && seekTo(tc.frameCount / 1e3);
-    }
-  }, []);
+        tc && seekTo(tc.frameCount / 1e3);
+      }
+    },
+    [seekTo]
+  );
 
   const decorate = useCallback(([node, path]) => {
     const ranges = [];
