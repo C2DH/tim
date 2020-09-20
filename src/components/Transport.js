@@ -114,7 +114,7 @@ const Transport = ({ player }) => {
           </Item>
         </ActionGroup>
         <MenuTrigger>
-          <ActionButton isQuiet>
+          <ActionButton isQuiet aria-label="Playback rate">
             <Fast />
           </ActionButton>
           <Menu>
@@ -129,7 +129,7 @@ const Transport = ({ player }) => {
         </ActionButton>
         <TextField aria-label="name" isQuiet flex={1} />
         <DialogTrigger type="popover">
-          <ActionButton isQuiet>
+          <ActionButton isQuiet aria-label="New">
             <NewItem />
           </ActionButton>
           <Dialog>
@@ -141,7 +141,7 @@ const Transport = ({ player }) => {
           </Dialog>
         </DialogTrigger>
         <DialogTrigger type="popover">
-          <ActionButton isQuiet>
+          <ActionButton isQuiet aria-label="Export">
             <Export />
           </ActionButton>
           {close => (
@@ -169,7 +169,7 @@ const Transport = ({ player }) => {
           )}
         </DialogTrigger>
         <DialogTrigger isDismissable>
-          <ActionButton isQuiet>
+          <ActionButton isQuiet aria-label="Settings">
             <Settings />
           </ActionButton>
           <Dialog>

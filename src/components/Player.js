@@ -87,7 +87,13 @@ const Player = (props, ref) => {
           <Flex direction="column" gap="size-50">
             <Text>Choose</Text>
             <ActionButton onPress={triggerFileInput}>media file</ActionButton>
-            <input type="file" accept="audio/*, video/*" onChange={loadFile} ref={fileInput} />
+            <input
+              type="file"
+              accept="audio/*, video/*"
+              onChange={loadFile}
+              ref={fileInput}
+              aria-label="Choose media file"
+            />
 
             <Text>or</Text>
             <DialogTrigger type="popover">
