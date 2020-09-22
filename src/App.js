@@ -24,7 +24,7 @@ const App = () => {
   const transcriptVisible = useRecoilValue(transcriptVisibleState);
 
   return (
-    <Flex direction="column" gap="size-100" minHeight="100vh">
+    <Flex direction="column" gap="size-100" height="100vh">
       <View height="size-800">
         <Transport player={player} />
       </View>
@@ -38,8 +38,8 @@ const App = () => {
           <Item key="metadata">Metadata</Item>
         </ActionGroup>
       </View>
-      <Flex direction="row" gap="size-100" flex>
-        <View flex>
+      <Flex direction="row" gap="size-100" flex UNSAFE_style={{ overflow: 'hidden' }}>
+        <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
           <Content margin="size-100">
             <Switch>
               <Route exact path="/">
@@ -52,7 +52,7 @@ const App = () => {
           </Content>
         </View>
         {transcriptVisible ? (
-          <View width="size-5000">
+          <View width="size-5000" UNSAFE_style={{ overflowY: 'scroll' }}>
             <Transcript />
           </View>
         ) : null}
