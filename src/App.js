@@ -4,7 +4,7 @@ import { atom, useRecoilValue } from 'recoil';
 import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 
 import Transport from './components/Player/Transport';
-import Editor from './components/Notes/Editor';
+import Notes from './components/Notes/Notes';
 import Toolbar from './components/Notes/Toolbar';
 import Metadata from './components/Metadata/Metadata';
 import Transcript from './components/Transcript/Transcript';
@@ -43,7 +43,7 @@ const App = () => {
           <Content margin="size-100">
             <Switch>
               <Route exact path="/">
-                <Editor player={player} />
+                <Notes player={player} />
               </Route>
               <Route path="/metadata">
                 <Metadata />

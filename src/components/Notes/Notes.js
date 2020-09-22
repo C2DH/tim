@@ -14,7 +14,7 @@ import timecode from 'smpte-timecode';
 import { update } from '../../reducers/data';
 import Leaf from './Leaf';
 
-import './Editor.css';
+import './Notes.css';
 
 (Prism.languages.markdown = Prism.languages.extend('markup', {})),
   Prism.languages.insertBefore('markdown', 'prolog', {
