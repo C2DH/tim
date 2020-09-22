@@ -49,9 +49,15 @@ const playState = atom({
   default: false,
 });
 
+const readyState = atom({
+  key: 'readyState',
+  default: false,
+});
+
 const Transport = ({ player }) => {
   const duration = useRecoilValue(durationState);
   const progress = useRecoilValue(progressState);
+  const ready = useRecoilValue(readyState);
   const [playing, setPlaying] = useRecoilState(playState);
 
   const durationTC = useMemo(() => {
@@ -94,7 +100,7 @@ const Transport = ({ player }) => {
   return (
     <>
       <Flex direction="row" gap="size-150">
-        <ActionGroup isQuiet onAction={setAction}>
+        <ActionGroup isQuiet isDisabled={!ready} onAction={setAction}>
           {playing ? (
             <Item key="pause" aria-label="Pause">
               <Pause />
@@ -112,7 +118,7 @@ const Transport = ({ player }) => {
           </Item>
         </ActionGroup>
         <MenuTrigger>
-          <ActionButton isQuiet aria-label="Playback rate">
+          <ActionButton aria-label="Playback rate" isQuiet isDisabled={!ready}>
             <Fast />
           </ActionButton>
           <Menu>
@@ -120,7 +126,7 @@ const Transport = ({ player }) => {
             <Item>2×</Item>
           </Menu>
         </MenuTrigger>
-        <ActionButton isQuiet isDisabled>
+        <ActionButton isQuiet isDisabled={!ready}>
           <Text>
             {progressTC} / {durationTC}
           </Text>

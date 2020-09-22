@@ -38,9 +38,15 @@ const playState = atom({
   default: false,
 });
 
+const readyState = atom({
+  key: 'readyState',
+  default: false,
+});
+
 const Player = (props, ref) => {
   const [, setDuration] = useRecoilState(durationState);
   const [, setProgress] = useRecoilState(progressState);
+  const [, setReady] = useRecoilState(readyState);
   const [playing, setPlaying] = useRecoilState(playState);
 
   const [text, setText] = useState('');
@@ -80,6 +86,13 @@ const Player = (props, ref) => {
     setProgress(0);
   }, [setUrl, setDuration, setProgress]);
 
+  const onPlay = useCallback(() => setPlaying(true), [setPlaying]);
+  const onPause = useCallback(() => setPlaying(false), [setPlaying]);
+  const onDuration = useCallback(d => setDuration(d), [setDuration]);
+  const onProgress = useCallback(({ playedSeconds }) => setProgress(playedSeconds), [setProgress]);
+  const onReady = useCallback(() => setReady(true), [setReady]);
+  const onError = useCallback(() => setReady(false), [setReady]);
+
   const fileInput = useRef(null);
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
 
@@ -89,14 +102,8 @@ const Player = (props, ref) => {
         <>
           <ReactPlayer
             controls
-            onDuration={d => setDuration(d)}
-            onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            pip={true}
-            {...{ ref, url, config, playing }}
+            {...{ ref, url, config, playing, onPlay, onPause, onDuration, onProgress, onReady, onError }}
           />
-
           <span className="drag-handle"></span>
           <ActionButton aria-label="Close player" isQuiet onPress={reset}>
             <CloseCircle />
