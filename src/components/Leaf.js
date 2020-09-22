@@ -2,6 +2,7 @@ import React from 'react';
 import { css } from 'emotion';
 
 const Leaf = ({ attributes, children, leaf }) => {
+  console.log({ attributes, children, leaf });
   return (
     <span
       {...attributes}

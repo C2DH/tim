@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import {
   Flex,
@@ -15,12 +15,10 @@ import {
   Dialog,
   Divider,
   Heading,
-  Header,
   Content,
   ButtonGroup,
   Button,
   Picker,
-  Section,
   Switch,
 } from '@adobe/react-spectrum';
 import Play from '@spectrum-icons/workflow/Play';

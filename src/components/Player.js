@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useMemo, useCallback, useRef } from 'react';
-import { RecoilRoot, atom, selector, useRecoilState, useRecoilValue } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
@@ -13,13 +13,12 @@ import {
   Flex,
   DialogTrigger,
   Dialog,
-  Divider,
-  Item,
   ButtonGroup,
   Button,
   TextField,
 } from '@adobe/react-spectrum';
 import NotFound from '@spectrum-icons/illustrations/NotFound';
+import CloseCircle from '@spectrum-icons/workflow/CloseCircle';
 
 import './Player.css';
 import 'react-resizable/css/styles.css';
@@ -40,21 +39,46 @@ const playState = atom({
 });
 
 const Player = (props, ref) => {
-  const [duration, setDuration] = useRecoilState(durationState);
-  const [progress, setProgress] = useRecoilState(progressState);
+  const [, setDuration] = useRecoilState(durationState);
+  const [, setProgress] = useRecoilState(progressState);
   const [playing, setPlaying] = useRecoilState(playState);
 
   const [text, setText] = useState('');
+  const [type, setType] = useState('video');
   const [url, setUrl] = useState(null);
 
   const isValid = useMemo(() => ReactPlayer.canPlay(text), [text]);
+  const config = useMemo(
+    () => ({
+      file: {
+        forceAudio: type === 'audio',
+        forceVideo: type === 'video',
+      },
+    }),
+    [type]
+  );
 
-  const loadFile = useCallback(({ nativeEvent: { target: { files } } }) => {
-    if (files.length > 0) {
-      const blob = window.URL.createObjectURL(files[0]);
-      setUrl(blob);
-    }
-  }, []);
+  const loadFile = useCallback(
+    ({
+      nativeEvent: {
+        target: { files },
+      },
+    }) => {
+      if (files.length > 0) {
+        console.log(files);
+        const blob = window.URL.createObjectURL(files[0]);
+        setType(files[0].type.split('/')[0]);
+        setUrl(blob);
+      }
+    },
+    [setType, setUrl]
+  );
+
+  const reset = useCallback(() => {
+    setUrl(null);
+    setDuration(0);
+    setProgress(0);
+  }, [setUrl, setDuration, setProgress]);
 
   const fileInput = useRef(null);
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
@@ -64,17 +88,19 @@ const Player = (props, ref) => {
       <ResizableBox width={300} height={194} minConstraints={[200, 113]} maxConstraints={[720, 480]}>
         <>
           <ReactPlayer
-            ref={ref}
             controls
             onDuration={d => setDuration(d)}
             onProgress={({ playedSeconds }) => setProgress(playedSeconds)}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
             pip={true}
-            {...{ playing, url }}
+            {...{ ref, url, config, playing }}
           />
 
           <span className="drag-handle"></span>
+          <ActionButton aria-label="Close player" isQuiet onPress={reset}>
+            <CloseCircle />
+          </ActionButton>
         </>
       </ResizableBox>
     </Draggable>

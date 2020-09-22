@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  editor: [
+  notes: [
     {
       children: [{ text: '# Title' }],
     },
     {
-      children: [{ text: '## Synopsis?' }],
+      children: [{ text: '> Synopsis 00:02:34 ?' }],
     },
     {
       children: [

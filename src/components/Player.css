@@ -1,6 +1,13 @@
 .react-draggable {
   position: absolute !important;
   z-index: 1337;
+  background-color: white;
+}
+
+.react-draggable button {
+  position: absolute;
+  top: -20px;
+  right: -20px;
 }
 
 .drag-handle {
@@ -22,11 +29,4 @@
 .react-resizable-handle-se {
   bottom: -10px !important;
   right: -10px !important;
-}
-
-input[type='file'] {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
 }

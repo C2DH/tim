@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
-import { Text, createEditor } from 'slate';
+import { Editor, Node, Text, Range, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 
 import timecode from 'smpte-timecode';
@@ -113,12 +113,46 @@ const progressState = atom({
   default: 0,
 });
 
-const Editor = ({ data, update, player }) => {
+const titleState = atom({
+  key: 'titleState',
+  default: false,
+});
+
+const synopsisState = atom({
+  key: 'synopsisState',
+  default: false,
+});
+
+const isTitleActive = editor => {
+  const [title] = Editor.nodes(editor, {
+    match: n => n.text && n.text.startsWith('#'),
+  });
+
+  return !!title;
+};
+
+const isSynopsisActive = editor => {
+  const [synopsis] = Editor.nodes(editor, {
+    match: n => n.text && n.text.startsWith('>'),
+  });
+
+  return !!synopsis;
+};
+
+const Notes = ({ data: { notes }, update, player }) => {
   const progress = useRecoilValue(progressState);
+  const [, setIsTitle] = useRecoilState(titleState);
+  const [, setIsSynopsis] = useRecoilState(synopsisState);
+
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
+  // debug
+  window.editor = editor;
+  window.Editor = Editor;
+
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
+
   const handleClick = useCallback(
     event => {
       const target = event.nativeEvent.srcElement;
@@ -135,6 +169,26 @@ const Editor = ({ data, update, player }) => {
     },
     [seekTo]
   );
+
+  const handleChange = useCallback(
+    notes => {
+      setIsTitle(isTitleActive(editor));
+      setIsSynopsis(isSynopsisActive(editor));
+      // const { selection } = editor;
+      // const [start, end] = Range.edges(selection);
+
+      // console.log(selection, [start, end]);
+
+      // if (Range.isCollapsed(selection)) {
+      //   // ...
+      // }
+
+      update({ notes });
+    },
+    [update, editor, setIsTitle, setIsSynopsis]
+  );
+
+  // const title = useMemo(() => isTitleActive(editor), [editor]);
 
   const decorate = useCallback(([node, path]) => {
     const ranges = [];
@@ -176,7 +230,7 @@ const Editor = ({ data, update, player }) => {
 
   return (
     <div onClick={handleClick}>
-      <Slate editor={editor} value={data.editor} onChange={value => update({ editor: value })}>
+      <Slate editor={editor} value={notes} onChange={handleChange}>
         <Editable
           decorate={decorate}
           renderLeaf={renderLeaf}
@@ -216,4 +270,4 @@ const Editor = ({ data, update, player }) => {
   );
 };
 
-export default connect(({ data }) => ({ data }), { update })(Editor);
+export default connect(({ data }) => ({ data }), { update })(Notes);
