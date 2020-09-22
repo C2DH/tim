@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Md from 'markdown-it';
 
-import { update } from '../reducers/data';
+import { update } from '../../reducers/data';
 
 import './Metadata.css';
 
 const Metadata = ({ data, update }) => {
-  const text = data.editor.map(({ children }) => children.map(({ text }) => text).join('\n')).join('\n');
+  const text = data.notes.map(({ children }) => children.map(({ text }) => text).join('\n')).join('\n');
   const md = new Md();
   const parsed = md.parse(text, {});
 

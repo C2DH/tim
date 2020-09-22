@@ -11,7 +11,7 @@ import { withHistory } from 'slate-history';
 
 import timecode from 'smpte-timecode';
 
-import { update } from '../reducers/data';
+import { update } from '../../reducers/data';
 import Leaf from './Leaf';
 
 import './Editor.css';

@@ -3,12 +3,12 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { atom, useRecoilValue } from 'recoil';
 import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 
-import Transport from './components/Transport';
-import Editor from './components/Editor';
-import Toolbar from './components/Toolbar';
-import Metadata from './components/Metadata';
-import Transcript from './components/Transcript';
-import Player from './components/Player';
+import Transport from './components/Player/Transport';
+import Editor from './components/Notes/Editor';
+import Toolbar from './components/Notes/Toolbar';
+import Metadata from './components/Metadata/Metadata';
+import Transcript from './components/Transcript/Transcript';
+import Player from './components/Player/Player';
 
 import './App.css';
 
