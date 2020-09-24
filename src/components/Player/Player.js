@@ -3,6 +3,7 @@ import { atom, useRecoilState } from 'recoil';
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
+
 import {
   IllustratedMessage,
   Heading,
@@ -17,6 +18,7 @@ import {
   Button,
   TextField,
 } from '@adobe/react-spectrum';
+
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 import CloseCircle from '@spectrum-icons/workflow/CloseCircle';
 
@@ -125,6 +127,7 @@ const Player = (props, ref) => {
               accept="audio/*, video/*"
               onChange={loadFile}
               ref={fileInput}
+              pip={true}
               aria-label="Choose media file"
             />
 

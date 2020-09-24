@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Md from 'markdown-it';
 
+import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
+
 import { update } from '../../reducers/data';
 
 import './Metadata.css';
@@ -12,9 +14,11 @@ const Metadata = ({ data, update }) => {
   const parsed = md.parse(text, {});
 
   return (
-    <div>
-      <code>{JSON.stringify(parsed, null, 2)}</code>
-    </div>
+    <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
+      <Content margin="size-100">
+        <code>{JSON.stringify(parsed, null, 2)}</code>
+      </Content>
+    </View>
   );
 };
 

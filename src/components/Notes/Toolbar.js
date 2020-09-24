@@ -1,5 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import { useEditor } from 'slate-react';
+// import { Editor, Node, Text, Range, createEditor } from 'slate';
+
 import { ActionGroup, Item } from '@adobe/react-spectrum';
 
 import Comment from '@spectrum-icons/workflow/Comment';
@@ -28,6 +31,8 @@ const Toolbar = () => {
   const isTitle = useRecoilValue(titleState);
   const isSynopsis = useRecoilValue(synopsisState);
 
+  // const editor = useEditor();
+
   // if (transcriptVisible) selected.push('transcript');
   // if (isTitle) selected.push('title');
 
@@ -51,9 +56,6 @@ const Toolbar = () => {
 
   return (
     <ActionGroup orientation="vertical" selectionMode="multiple" selectedKeys={selected} onAction={setAction}>
-      <Item key="transcript" aria-label="Transcript">
-        <Comment />
-      </Item>
       <Item key="timecode" aria-label="Timecode">
         <Clock />
       </Item>
@@ -71,3 +73,7 @@ const Toolbar = () => {
 };
 
 export default Toolbar;
+
+// <Item key="transcript" aria-label="Transcript">
+//         <Comment />
+//       </Item>

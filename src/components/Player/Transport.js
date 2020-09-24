@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import React, { useCallback, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import timecode from 'smpte-timecode';
+
 import {
   Flex,
   ProgressBar,
@@ -21,6 +23,7 @@ import {
   Picker,
   Switch,
 } from '@adobe/react-spectrum';
+
 import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
 import Rewind from '@spectrum-icons/workflow/Rewind';
@@ -29,8 +32,6 @@ import Fast from '@spectrum-icons/workflow/Fast';
 import NewItem from '@spectrum-icons/workflow/NewItem';
 import Export from '@spectrum-icons/workflow/Export';
 import Settings from '@spectrum-icons/workflow/Settings';
-
-import timecode from 'smpte-timecode';
 
 import './Transport.css';
 

@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { atom, useRecoilValue } from 'recoil';
-import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
+
+import { Flex, View, Content, ActionGroup, Item, Switch as Toggle } from '@adobe/react-spectrum';
 
 import Transport from './components/Player/Transport';
 import Notes from './components/Notes/Notes';
@@ -29,38 +30,40 @@ const App = () => {
         <Transport player={player} />
       </View>
       <View>
-        <ActionGroup
-          selectionMode="single"
-          defaultSelectedKeys={['notes']}
-          onAction={action => history.push(action === 'notes' ? '/' : '/metadata')}
-        >
-          <Item key="notes">Notes</Item>
-          <Item key="metadata">Metadata</Item>
-        </ActionGroup>
+        <Flex direction="row" marginX="size-100">
+          <ActionGroup
+            marginStart="size-700"
+            marginEnd="size-100"
+            selectionMode="single"
+            defaultSelectedKeys={['notes']}
+            onAction={action => history.push(action === 'notes' ? '/' : '/metadata')}
+          >
+            <Item key="notes">Notes</Item>
+            <Item key="metadata">Metadata</Item>
+          </ActionGroup>
+          <Toggle>Transcript</Toggle>
+        </Flex>
       </View>
       <Flex direction="row" gap="size-100" flex UNSAFE_style={{ overflow: 'hidden' }}>
-        <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
-          <Content margin="size-100">
-            <Switch>
-              <Route exact path="/">
-                <Notes player={player} />
-              </Route>
-              <Route path="/metadata">
-                <Metadata />
-              </Route>
-            </Switch>
-          </Content>
+        <View width="size-5000">
+          <Player ref={player} />
         </View>
         {transcriptVisible ? (
           <View width="size-5000" UNSAFE_style={{ overflowY: 'scroll' }}>
             <Transcript />
           </View>
         ) : null}
-        <View>
+
+        <Switch>
+          <Route exact path="/">
+            <Notes player={player} />
+          </Route>
+          <Route path="/metadata">
+            <Metadata />
+          </Route>
+        </Switch>
+        <View margin="size-100">
           <Toolbar />
-        </View>
-        <View width="size-5000">
-          <Player ref={player} />
         </View>
       </Flex>
       <View height="size-800">(footer)</View>

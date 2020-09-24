@@ -3,13 +3,14 @@ import Prism from 'prismjs';
 import React, { useCallback, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
+import timecode from 'smpte-timecode';
 
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, Node, Text, Range, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 
-import timecode from 'smpte-timecode';
+import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 
 import { update } from '../../reducers/data';
 import Leaf from './Leaf';
@@ -188,7 +189,37 @@ const Notes = ({ data: { notes }, update, player }) => {
     [update, editor, setIsTitle, setIsSynopsis]
   );
 
-  // const title = useMemo(() => isTitleActive(editor), [editor]);
+  const onKeyDown = useCallback(
+    event => {
+      for (const hotkey in HOTKEYS) {
+        if (isHotkey(hotkey, event)) {
+          event.preventDefault();
+
+          const mark = HOTKEYS[hotkey];
+
+          if (mark.startsWith('time')) {
+            const tokens = [];
+
+            mark === 'times' &&
+              [3, 2, 1]
+                .filter(delta => progress >= delta)
+                .forEach(delta => {
+                  const tc = timecode((progress - delta) * 1e3, 1e3);
+                  const [hh, mm, ss, mmm] = tc.toString().split(':');
+                  tokens.push(`[${hh}:${mm}:${ss}]`);
+                });
+
+            const tc = timecode(progress * 1e3, 1e3);
+            const [hh, mm, ss, mmm] = tc.toString().split(':');
+            tokens.push(`[${hh}:${mm}:${ss}]`);
+
+            editor.insertText(tokens.join(' '));
+          }
+        }
+      }
+    },
+    [editor, progress]
+  );
 
   const decorate = useCallback(([node, path]) => {
     const ranges = [];
@@ -229,44 +260,15 @@ const Notes = ({ data: { notes }, update, player }) => {
   }, []);
 
   return (
-    <div onClick={handleClick}>
-      <Slate editor={editor} value={notes} onChange={handleChange}>
-        <Editable
-          decorate={decorate}
-          renderLeaf={renderLeaf}
-          placeholder="Write some markdown…"
-          autoFocus
-          onKeyDown={event => {
-            for (const hotkey in HOTKEYS) {
-              if (isHotkey(hotkey, event)) {
-                event.preventDefault();
-
-                const mark = HOTKEYS[hotkey];
-
-                if (mark.startsWith('time')) {
-                  const tokens = [];
-
-                  mark === 'times' &&
-                    [3, 2, 1]
-                      .filter(delta => progress >= delta)
-                      .forEach(delta => {
-                        const tc = timecode((progress - delta) * 1e3, 1e3);
-                        const [hh, mm, ss, mmm] = tc.toString().split(':');
-                        tokens.push(`[${hh}:${mm}:${ss}]`);
-                      });
-
-                  const tc = timecode(progress * 1e3, 1e3);
-                  const [hh, mm, ss, mmm] = tc.toString().split(':');
-                  tokens.push(`[${hh}:${mm}:${ss}]`);
-
-                  editor.insertText(tokens.join(' '));
-                }
-              }
-            }
-          }}
-        />
-      </Slate>
-    </div>
+    <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
+      <Content margin="size-100">
+        <div onClick={handleClick}>
+          <Slate editor={editor} value={notes} onChange={handleChange}>
+            <Editable autoFocus placeholder="Write some markdown…" {...{ decorate, renderLeaf, onKeyDown }} />
+          </Slate>
+        </div>
+      </Content>
+    </View>
   );
 };
 
