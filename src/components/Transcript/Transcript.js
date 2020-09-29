@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import {
@@ -17,18 +17,12 @@ import {
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 
+import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
-
-import './Transcript.css';
 
 const transcriptState = atom({
   key: 'transcriptState',
   default: false,
-});
-
-const progressState = atom({
-  key: 'progressState',
-  default: 0,
 });
 
 const Transcript = ({ player }) => {
@@ -37,7 +31,6 @@ const Transcript = ({ player }) => {
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
   const [transcript, setTranscript] = useRecoilState(transcriptState);
-  const time = useRecoilValue(progressState);
 
   useEffect(() => {
     const validate = async () => {
@@ -74,41 +67,8 @@ const Transcript = ({ player }) => {
     setTranscript,
   ]);
 
-  const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
-
-  const handleClick = useCallback(
-    event => {
-      const target = event.nativeEvent.srcElement;
-      if (target.nodeName === 'SPAN') {
-        const start = target.getAttribute('data-start');
-        start && seekTo(parseFloat(start));
-      }
-    },
-    [seekTo]
-  );
-
   return transcript ? (
-    <div className="transcript" onClick={handleClick}>
-      {transcript.map(({ start, end, items }) => {
-        const played = end <= time;
-        const focus = start <= time && time < end;
-
-        return (
-          <p key={`s${start},${end}`} data-start={start} data-end={end} className={`played-${played} focus-${focus}`}>
-            {items.map(({ text, start, end }) => (
-              <span
-                key={`t${start},${end}`}
-                data-start={start}
-                data-end={end}
-                className={`played-${played || end <= time} playhead-${focus && start <= time && time < end}`}
-              >
-                {text}{' '}
-              </span>
-            ))}
-          </p>
-        );
-      })}
-    </div>
+    <TranscriptPlayer {...{ transcript, player }} />
   ) : (
     <Well marginX="size-500">
       <IllustratedMessage>

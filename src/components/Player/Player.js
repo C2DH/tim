@@ -104,6 +104,7 @@ const Player = (props, ref) => {
         <>
           <ReactPlayer
             controls
+            progressInterval={75}
             {...{ ref, url, config, playing, onPlay, onPause, onDuration, onProgress, onReady, onError }}
           />
           <span className="drag-handle"></span>

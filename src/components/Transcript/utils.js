@@ -13,23 +13,29 @@ export const parse = (data, format) => {
 
           resolve(
             results
-              .map(({ alternatives: [{ transcript: text, words }] }) => ({
+              .map(({ alternatives: [{ transcript: text, words }] }, segmentIndex) => ({
                 text,
+                id: `s${segmentIndex}`,
                 items: words.map(
-                  ({
-                    word: text,
-                    startTime: { seconds: startSeconds, nanos: startNanos = 0 },
-                    endTime: { seconds: endSeconds, nanos: endNanos = 0 },
-                  }) => ({
+                  (
+                    {
+                      word: text,
+                      startTime: { seconds: startSeconds, nanos: startNanos = 0 },
+                      endTime: { seconds: endSeconds, nanos: endNanos = 0 },
+                    },
+                    index
+                  ) => ({
                     text,
+                    id: `i${segmentIndex}-${index}`,
                     start: parseInt(startSeconds, 10) + startNanos / 1e9,
                     end: parseInt(endSeconds) + endNanos / 1e9,
                   })
                 ),
               }))
-              .map(({ text, items }) => ({
+              .map(({ text, items, id }) => ({
                 text,
                 items,
+                id,
                 start: items[0]?.start,
                 end: items[items.length - 1]?.end,
               }))
@@ -50,11 +56,11 @@ export const parse = (data, format) => {
           } = JSON.parse(data);
 
           const convertedItems = items
-            .map(({ start_time, end_time, alternatives: [{ content: text }], type }) => {
+            .map(({ start_time, end_time, alternatives: [{ content: text }], type }, index) => {
               const start = parseFloat(start_time, 10);
               const end = parseFloat(end_time, 10);
 
-              return { text, start, end, type };
+              return { text, start, end, type, id: `i${index}` };
             })
             .reduce((acc, item) => {
               const { text, type } = item;
@@ -66,7 +72,7 @@ export const parse = (data, format) => {
             }, []);
 
           resolve(
-            segments.map(({ start_time, end_time }) => {
+            segments.map(({ start_time, end_time }, index) => {
               const segmentStart = parseFloat(start_time, 10);
               const segmentEnd = parseFloat(end_time, 10);
 
@@ -76,6 +82,7 @@ export const parse = (data, format) => {
 
               return {
                 text: segmentItems.map(({ text }) => text).join(' '),
+                id: `s${index}`,
                 start: segmentStart,
                 end: segmentEnd,
                 items: segmentItems,
@@ -93,11 +100,11 @@ export const parse = (data, format) => {
           const { speakers, words } = JSON.parse(data);
 
           const convertedWords = words
-            .map(({ time, duration, name: text }) => {
+            .map(({ time, duration, name: text }, index) => {
               const start = parseFloat(time, 10);
               const end = start + parseFloat(duration, 10);
 
-              return { text, start, end };
+              return { text, start, end, id: `i${index}` };
             })
             .reduce((acc, item) => {
               const { text } = item;
@@ -109,7 +116,7 @@ export const parse = (data, format) => {
             }, []);
 
           resolve(
-            speakers.map(({ time, duration }) => {
+            speakers.map(({ time, duration }, index) => {
               const segmentStart = parseFloat(time, 10);
               const segmentEnd = segmentStart + parseFloat(duration, 10);
 
@@ -117,6 +124,7 @@ export const parse = (data, format) => {
 
               return {
                 text: items.map(({ text }) => text).join(' '),
+                id: `s${index}`,
                 start: segmentStart,
                 end: segmentEnd,
                 items,
@@ -139,12 +147,14 @@ export const parse = (data, format) => {
 
           vttParser.onflush = () =>
             resolve(
-              cues.map(({ text, startTime: start, endTime: end }) => ({
+              cues.map(({ text, startTime: start, endTime: end }, segmentIndex) => ({
                 text,
+                id: `s${segmentIndex}`,
                 start,
                 end,
-                items: text.split(' ').map(text => ({
+                items: text.split(' ').map((text, index) => ({
                   text,
+                  id: `i${segmentIndex}-${index}`,
                   start,
                   end,
                 })),
@@ -164,12 +174,14 @@ export const parse = (data, format) => {
           resolve(
             SRTParser(data)
               .filter(({ type }) => type === 'cue')
-              .map(({ data: { text, start, end } }) => ({
+              .map(({ data: { text, start, end } }, segmentIndex) => ({
                 text,
+                id: `s${segmentIndex}`,
                 start: start / 1e3,
                 end: end / 1e3,
-                items: text.split(' ').map(text => ({
+                items: text.split(' ').map((text, index) => ({
                   text,
+                  id: `i${segmentIndex}-${index}`,
                   start,
                   end,
                 })),
