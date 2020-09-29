@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import {
@@ -17,7 +17,7 @@ import {
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 
-import { canParse, parse } from './utils';
+import { parse } from './utils';
 
 const transcriptState = atom({
   key: 'transcriptState',
@@ -27,11 +27,22 @@ const transcriptState = atom({
 const Transcript = () => {
   const [, setFile] = useState(null);
   const [text, setText] = useState('');
+  const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
   const [transcript, setTranscript] = useRecoilState(transcriptState);
   console.log({ transcript });
 
-  const isValid = useMemo(() => canParse(text, format), [text, format]);
+  useEffect(() => {
+    const validate = async () => {
+      try {
+        await parse(text, format);
+        setIsValid(true);
+      } catch (error) {
+        setIsValid(false);
+      }
+    };
+    validate();
+  }, [text, format, setIsValid]);
 
   const loadFile = useCallback(
     async ({
@@ -50,7 +61,11 @@ const Transcript = () => {
   const fileInput = useRef(null);
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
 
-  const loadTranscript = useCallback(() => setTranscript(parse(text, format)), [text, format, setTranscript]);
+  const loadTranscript = useCallback(async () => setTranscript(await parse(text, format)), [
+    text,
+    format,
+    setTranscript,
+  ]);
 
   return transcript ? (
     transcript.map(segment => <p>{segment.text}</p>)
