@@ -19,18 +19,25 @@ import NotFound from '@spectrum-icons/illustrations/NotFound';
 
 import { parse } from './utils';
 
+import './Transcript.css';
+
 const transcriptState = atom({
   key: 'transcriptState',
   default: false,
 });
 
+const progressState = atom({
+  key: 'progressState',
+  default: 0,
+});
+
 const Transcript = () => {
-  const [, setFile] = useState(null);
+  // const [, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
   const [transcript, setTranscript] = useRecoilState(transcriptState);
-  console.log({ transcript });
+  const time = useRecoilValue(progressState);
 
   useEffect(() => {
     const validate = async () => {
@@ -52,10 +59,10 @@ const Transcript = () => {
     }) => {
       if (files.length === 0) return;
 
-      setFile(files[0]);
+      // setFile(files[0]);
       setText(await (await fetch(window.URL.createObjectURL(files[0]))).text());
     },
-    [setFile]
+    [setText]
   );
 
   const fileInput = useRef(null);
@@ -68,7 +75,27 @@ const Transcript = () => {
   ]);
 
   return transcript ? (
-    transcript.map(segment => <p>{segment.text}</p>)
+    <div className="transcript">
+      {transcript.map(({ text, start, end, items }) => {
+        const played = end <= time;
+        const focus = start <= time && time < end;
+
+        return (
+          <p key={`s${start},${end}`} data-start={start} data-end={end} className={`played-${played} focus-${focus}`}>
+            {items.map(({ text, start, end }) => (
+              <span
+                key={`t${start},${end}`}
+                data-start={start}
+                data-end={end}
+                className={`played-${played || end <= time} playhead-${focus && start <= time && time < end}`}
+              >
+                {text}{' '}
+              </span>
+            ))}
+          </p>
+        );
+      })}
+    </div>
   ) : (
     <Well marginX="size-500">
       <IllustratedMessage>

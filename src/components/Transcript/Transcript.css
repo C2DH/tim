@@ -1,0 +1,22 @@
+.transcript {
+  font-family: source-code-pro, Monaco, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 12px;
+}
+
+p.played-true {
+  /* color: black; */
+  font-weight: bold;
+}
+
+span.played-true {
+  /* color: black; */
+  font-weight: bold;
+}
+
+/* p.focus-true {
+  border-left: 1px solid blue;
+} */
+
+/* span.playhead-true {
+  color: red;
+} */
