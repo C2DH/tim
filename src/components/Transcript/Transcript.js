@@ -31,7 +31,7 @@ const progressState = atom({
   default: 0,
 });
 
-const Transcript = () => {
+const Transcript = ({ player }) => {
   // const [, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
@@ -74,9 +74,22 @@ const Transcript = () => {
     setTranscript,
   ]);
 
+  const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
+
+  const handleClick = useCallback(
+    event => {
+      const target = event.nativeEvent.srcElement;
+      if (target.nodeName === 'SPAN') {
+        const start = target.getAttribute('data-start');
+        start && seekTo(parseFloat(start));
+      }
+    },
+    [seekTo]
+  );
+
   return transcript ? (
-    <div className="transcript">
-      {transcript.map(({ text, start, end, items }) => {
+    <div className="transcript" onClick={handleClick}>
+      {transcript.map(({ start, end, items }) => {
         const played = end <= time;
         const focus = start <= time && time < end;
 

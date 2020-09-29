@@ -52,7 +52,7 @@ const App = () => {
         </View>
         {transcriptVisible ? (
           <View width="size-5000" UNSAFE_style={{ overflowY: 'scroll' }}>
-            <Transcript />
+            <Transcript player={player} />
           </View>
         ) : null}
 
