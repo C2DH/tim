@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { atom, useRecoilValue } from 'recoil';
 
 const progressState = atom({
@@ -27,9 +27,13 @@ const Karaoke = ({ transcript }) => {
     [segment, time]
   );
 
+  useEffect(() => item && document.querySelector(`span[data-item="${item.id}"]`)?.scrollIntoView({ block: 'center' }), [
+    item,
+  ]);
+
   return (
     <style scoped>
-      {segment ? `p[data-segment="${segment?.id}"] ~ p { font-weight: normal; }` : null}
+      {segment ? `p[data-segment="${segment.id}"] ~ p { font-weight: normal; }` : null}
       {item ? `span[data-item="${item.id}"] ~ span { font-weight: normal; }` : null}
     </style>
   );
