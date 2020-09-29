@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
-import { atom, useRecoilValue } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 
 import { Flex, View, Content, ActionGroup, Item, Switch as Toggle } from '@adobe/react-spectrum';
 
@@ -22,7 +22,7 @@ const App = () => {
   const history = useHistory();
   const player = useRef(null);
 
-  const transcriptVisible = useRecoilValue(transcriptVisibleState);
+  const [transcriptVisible, setTranscriptVisible] = useRecoilState(transcriptVisibleState);
 
   return (
     <Flex direction="column" gap="size-100" height="100vh">
@@ -41,7 +41,9 @@ const App = () => {
             <Item key="notes">Notes</Item>
             <Item key="metadata">Metadata</Item>
           </ActionGroup>
-          <Toggle>Transcript</Toggle>
+          <Toggle isSelected={transcriptVisible} onChange={setTranscriptVisible}>
+            Transcript
+          </Toggle>
         </Flex>
       </View>
       <Flex direction="row" gap="size-100" flex UNSAFE_style={{ overflow: 'hidden' }}>
