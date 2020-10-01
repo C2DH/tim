@@ -38,6 +38,7 @@ const Transcript = ({ player }) => {
         await parse(text, format);
         setIsValid(true);
       } catch (error) {
+        console.error(error);
         setIsValid(false);
       }
     };
@@ -97,6 +98,7 @@ const Transcript = ({ player }) => {
               <Section title="JSON">
                 <Item key="google">Google</Item>
                 <Item key="amazon">Amazon</Item>
+                <Item key="ibm">IBM</Item>
                 <Item key="speechmatics">Speechmatics</Item>
               </Section>
               <Section title="Captions">

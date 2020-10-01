@@ -94,6 +94,36 @@ export const parse = (data, format) => {
         }
       });
 
+    case 'ibm':
+      return new Promise((resolve, reject) => {
+        try {
+          const { results } = JSON.parse(data);
+
+          resolve(
+            results
+              .map(({ alternatives: [{ transcript: text, timestamps }] }, segmentIndex) => ({
+                text,
+                id: `s${segmentIndex}`,
+                items: timestamps.map(([text, start, end], index) => ({
+                  text,
+                  id: `i${segmentIndex}-${index}`,
+                  start,
+                  end,
+                })),
+              }))
+              .map(({ text, items, id }) => ({
+                text,
+                items,
+                id,
+                start: items[0]?.start,
+                end: items[items.length - 1]?.end,
+              }))
+          );
+        } catch (error) {
+          reject(error);
+        }
+      });
+
     case 'speechmatics':
       return new Promise((resolve, reject) => {
         try {
