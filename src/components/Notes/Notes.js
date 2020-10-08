@@ -1,6 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 import Prism from 'prismjs';
 import React, { useCallback, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
 import timecode from 'smpte-timecode';
@@ -12,8 +13,9 @@ import { withHistory } from 'slate-history';
 
 import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 
-import { update } from '../../reducers/data';
+import { update, set } from '../../reducers/data';
 import Leaf from './Leaf';
+import Toolbar from './Toolbar';
 
 import './Notes.css';
 
@@ -140,7 +142,11 @@ const isSynopsisActive = editor => {
   return !!synopsis;
 };
 
-const Notes = ({ data: { notes }, update, player }) => {
+const Notes = ({ data: { items }, update, set, player }) => {
+  const { id } = useParams();
+  const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+  const { notes } = item ?? {};
+
   const progress = useRecoilValue(progressState);
   const [, setIsTitle] = useRecoilState(titleState);
   const [, setIsSynopsis] = useRecoilState(synopsisState);
@@ -184,9 +190,9 @@ const Notes = ({ data: { notes }, update, player }) => {
       //   // ...
       // }
 
-      update({ notes });
+      set([id, 'notes', notes]);
     },
-    [update, editor, setIsTitle, setIsSynopsis]
+    [id, set, editor, setIsTitle, setIsSynopsis]
   );
 
   const onKeyDown = useCallback(
@@ -260,16 +266,21 @@ const Notes = ({ data: { notes }, update, player }) => {
   }, []);
 
   return (
-    <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
-      <Content margin="size-100">
-        <div onClick={handleClick}>
-          <Slate editor={editor} value={notes} onChange={handleChange}>
-            <Editable autoFocus placeholder="Write some markdown…" {...{ decorate, renderLeaf, onKeyDown }} />
-          </Slate>
-        </div>
-      </Content>
-    </View>
+    <Flex direction="row" gap="size-100">
+      <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
+        <Content margin="size-100">
+          <div onClick={handleClick}>
+            <Slate editor={editor} value={notes} onChange={handleChange}>
+              <Editable autoFocus placeholder="Write some markdown…" {...{ decorate, renderLeaf, onKeyDown }} />
+            </Slate>
+          </div>
+        </Content>
+      </View>
+      <View margin="size-100">
+        <Toolbar />
+      </View>
+    </Flex>
   );
 };
 
-export default connect(({ data }) => ({ data }), { update })(Notes);
+export default connect(({ data }) => ({ data }), { update, set })(Notes);

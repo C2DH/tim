@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import {
   IllustratedMessage,
@@ -17,6 +19,8 @@ import {
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 
+import { update, set } from '../../reducers/data';
+
 import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
 
@@ -25,7 +29,10 @@ const transcriptState = atom({
   default: false,
 });
 
-const Transcript = ({ player }) => {
+const Transcript = ({ data: { items }, player, set }) => {
+  const { id } = useParams();
+  const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+
   // const [, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
@@ -78,7 +85,9 @@ const Transcript = ({ player }) => {
         <Content>
           <Flex direction="column" gap="size-50">
             <Text>Choose</Text>
-            <ActionButton onPress={triggerFileInput}>transcript file</ActionButton>
+            <ActionButton isDisabled={!item} onPress={triggerFileInput}>
+              transcript file
+            </ActionButton>
             <input
               type="file"
               accept="text/*, application/json, *.json, text/vtt, *.vtt, text/srt, *.srt"
@@ -88,8 +97,9 @@ const Transcript = ({ player }) => {
             />
 
             <Text>or paste here</Text>
-            <TextArea aria-label="transcript content" value={text} onChange={setText} />
+            <TextArea autoFocus aria-label="transcript content" isDisabled={!item} value={text} onChange={setText} />
             <Picker
+              isDisabled={!item}
               label="Choose format"
               selectedKey={format}
               onSelectionChange={setFormat}
@@ -116,4 +126,4 @@ const Transcript = ({ player }) => {
   );
 };
 
-export default Transcript;
+export default connect(({ data }) => ({ data }), { update, set })(Transcript);

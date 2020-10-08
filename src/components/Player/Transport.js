@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-expressions */
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
+
 import timecode from 'smpte-timecode';
+import fileDownload from 'js-file-download';
+import sanitize from 'sanitize-filename';
+
+import { update, set } from '../../reducers/data';
 
 import {
   Flex,
-  ProgressBar,
-  ActionGroup,
   Item,
   MenuTrigger,
   Menu,
@@ -30,6 +35,8 @@ import Rewind from '@spectrum-icons/workflow/Rewind';
 import FastForward from '@spectrum-icons/workflow/FastForward';
 import Fast from '@spectrum-icons/workflow/Fast';
 import NewItem from '@spectrum-icons/workflow/NewItem';
+import OpenRecent from '@spectrum-icons/workflow/OpenRecent';
+import SaveFloppy from '@spectrum-icons/workflow/SaveFloppy';
 import Export from '@spectrum-icons/workflow/Export';
 import Settings from '@spectrum-icons/workflow/Settings';
 
@@ -55,11 +62,21 @@ const readyState = atom({
   default: false,
 });
 
-const Transport = ({ player }) => {
+const Transport = ({ player, data: { items }, set }) => {
+  const history = useHistory();
+  const { id } = useParams();
+
+  const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+  const { title = '' } = item ?? {};
+
+  const [recent, setRecent] = useState(null);
+
   const duration = useRecoilValue(durationState);
   const progress = useRecoilValue(progressState);
   const ready = useRecoilValue(readyState);
   const [playing, setPlaying] = useRecoilState(playState);
+
+  const disabled = useMemo(() => !ready || !item, [ready, item]);
 
   const durationTC = useMemo(() => {
     const tc = timecode(duration * 1e3, 1e3);
@@ -73,53 +90,48 @@ const Transport = ({ player }) => {
     return `${hh}:${mm}:${ss}`;
   }, [progress]);
 
+  const play = useCallback(() => setPlaying(true), [setPlaying]);
+  const pause = useCallback(() => setPlaying(false), [setPlaying]);
   const ffw = useCallback(() => player.current?.seekTo(progress + 1, 'seconds'), [player, progress]);
   const rwd = useCallback(() => player.current?.seekTo(progress - 1, 'seconds'), [player, progress]);
 
-  const setAction = useCallback(
-    action => {
-      switch (action) {
-        case 'play':
-          setPlaying(true);
-          break;
-        case 'pause':
-          setPlaying(false);
-          break;
-        case 'ffw':
-          ffw();
-          break;
-        case 'rwd':
-          rwd();
-          break;
-        default:
-          console.warn('unhandled action', action);
-      }
+  const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
+
+  const timeline = useRef(null);
+
+  const handleTimelineClick = useCallback(
+    ({ nativeEvent: { clientX } }) => {
+      const { width } = timeline.current?.getClientRects()[0];
+      player.current?.seekTo((duration * clientX) / width, 'seconds');
     },
-    [setPlaying, rwd, ffw]
+    [timeline, duration, player]
   );
+
+  const save = useCallback(() => fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`), [item]);
+
+  // const openRecent = useCallback(close => close() && history.push(`/notes/${recent}`), [recent, history]);
 
   return (
     <>
-      <Flex direction="row" gap="size-150">
-        <ActionGroup isQuiet isDisabled={!ready} onAction={setAction}>
-          {playing ? (
-            <Item key="pause" aria-label="Pause">
-              <Pause />
-            </Item>
-          ) : (
-            <Item key="play" aria-label="Play">
-              <Play />
-            </Item>
-          )}
-          <Item key="rwd" aria-label="Rewind">
-            <Rewind />
-          </Item>
-          <Item key="ffw" aria-label="Fast Forward">
-            <FastForward />
-          </Item>
-        </ActionGroup>
+      <Flex direction="row" gap="size-150" margin="size-100">
+        {playing ? (
+          <ActionButton aria-label="Pause" isQuiet isDisabled={disabled} onPress={pause}>
+            <Pause />
+          </ActionButton>
+        ) : (
+          <ActionButton aria-label="Play" isQuiet isDisabled={disabled} onPress={play}>
+            <Play />
+          </ActionButton>
+        )}
+        <ActionButton aria-label="Rewind" isQuiet isDisabled={disabled} onPress={rwd}>
+          <Rewind />
+        </ActionButton>
+        <ActionButton aria-label="Fast Forward" isQuiet isDisabled={disabled} onPress={ffw}>
+          <FastForward />
+        </ActionButton>
+
         <MenuTrigger>
-          <ActionButton aria-label="Playback rate" isQuiet isDisabled={!ready}>
+          <ActionButton aria-label="Playback rate" isQuiet isDisabled={disabled}>
             <Fast />
           </ActionButton>
           <Menu>
@@ -127,26 +139,61 @@ const Transport = ({ player }) => {
             <Item>2×</Item>
           </Menu>
         </MenuTrigger>
-        <ActionButton isQuiet isDisabled={!ready}>
+
+        <ActionButton isQuiet isDisabled={disabled}>
           <Text>
             {progressTC} / {durationTC}
           </Text>
         </ActionButton>
-        <TextField aria-label="name" isQuiet flex={1} />
+
+        <TextField aria-label="name" isQuiet flex={1} value={title} isDisabled={!item} onChange={setTitle} />
+
+        <ActionButton isQuiet aria-label="New" onPress={() => history.push('/')}>
+          <NewItem />
+        </ActionButton>
+
         <DialogTrigger type="popover">
           <ActionButton isQuiet aria-label="New">
-            <NewItem />
+            <OpenRecent />
           </ActionButton>
-          <Dialog>
-            <Heading>New</Heading>
-            <Divider />
-            <Content>
-              <Text>new…</Text>
-            </Content>
-          </Dialog>
+          {close => (
+            <Dialog>
+              <Heading>Open recent</Heading>
+              <Divider />
+              <Content>
+                <Picker label="Choose" onSelectionChange={setRecent}>
+                  {[...items]
+                    .sort(({ updated: a }, { updated: b }) => b - a)
+                    .map(({ id, title }) => (
+                      <Item key={id}>{title}</Item>
+                    ))}
+                </Picker>
+              </Content>
+              <ButtonGroup>
+                <Button variant="secondary" onPress={close}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="cta"
+                  isDisabled={!recent}
+                  onPress={() => {
+                    close();
+                    history.push(`/notes/${recent}`);
+                  }}
+                >
+                  Open
+                </Button>
+              </ButtonGroup>
+            </Dialog>
+          )}
         </DialogTrigger>
+
+        <ActionButton isQuiet aria-label="Save" isDisabled={!item} onPress={save}>
+          <SaveFloppy />
+        </ActionButton>
+
         <DialogTrigger type="popover">
-          <ActionButton isQuiet aria-label="Export">
+          <ActionButton isQuiet aria-label="Export" isDisabled={!item}>
             <Export />
           </ActionButton>
           {close => (
@@ -173,6 +220,7 @@ const Transport = ({ player }) => {
             </Dialog>
           )}
         </DialogTrigger>
+
         <DialogTrigger isDismissable>
           <ActionButton isQuiet aria-label="Settings">
             <Settings />
@@ -187,11 +235,13 @@ const Transport = ({ player }) => {
         </DialogTrigger>
       </Flex>
 
-      <Flex direction="row" marginTop="size-150" UNSAFE_className="timeline">
-        <ProgressBar minValue={0} maxValue={duration} value={progress} width={'100%'} aria-label="progress" />
+      <Flex direction="row" marginTop="size-150">
+        <div className="timeline" onClick={handleTimelineClick} ref={timeline}>
+          <div className="progress" style={{ width: `${duration === 0 ? 0 : (100 * progress) / duration}%` }}></div>
+        </div>
       </Flex>
     </>
   );
 };
 
-export default Transport;
+export default connect(({ data }) => ({ data }), { update, set })(Transport);

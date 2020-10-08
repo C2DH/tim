@@ -1,75 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  notes: [
+  items: [
     {
-      children: [{ text: '# Title' }],
-    },
-    {
-      children: [{ text: '> Synopsis 00:02:34 ?' }],
-    },
-    {
-      children: [
+      id: 'test',
+      title: 'TEST',
+      url: null,
+      notes: [
         {
-          text: 'Timecodes just text 00:02:34 with brackets in the middle [00:02:34] of text',
+          children: [{ text: '[00:00:00]' }],
         },
       ],
+      metadata: [],
+      created: Date.now(),
+      updated: Date.now(),
     },
     {
-      children: [
+      id: 'test2',
+      title: 'TEST test',
+      url: null,
+      notes: [
         {
-          text: '[00:02:34] at beginning',
+          children: [{ text: '[00:00:00]' }],
         },
       ],
-    },
-    {
-      children: [
-        {
-          text: 'at the end [00:02:34]',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: 'alone on its line as delimiter:',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: '[00:02:34]',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: '---',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: 'Markdown: **bold** and _italic_ and `code`',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: '> quote [00:02:34]',
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          text: 'List\n* one 00:02:34\n* two\n* four\n* three',
-        },
-      ],
+      metadata: [],
+      created: Date.now(),
+      updated: Date.now(),
     },
   ],
 };
@@ -80,10 +37,21 @@ const dataSlice = createSlice({
 
   reducers: {
     update: (state, { payload }) => ({ ...state, ...payload }),
+    set: (state, { payload: [id, key, value] }) => {
+      const index = state.items.findIndex(({ id: id_ }) => id_ === id);
+      state.items[index][key] = value;
+      state.items[index].updated = Date.now();
+
+      return state;
+    },
+    add: (state, { payload }) => {
+      state.items.push(payload);
+      return state;
+    },
     reset: () => initialState,
   },
 });
 
 const { actions, reducer } = dataSlice;
-export const { update, reset } = actions;
+export const { update, set, add, reset } = actions;
 export default reducer;

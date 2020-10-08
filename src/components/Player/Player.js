@@ -1,5 +1,8 @@
 import React, { forwardRef, useState, useMemo, useCallback, useRef } from 'react';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { atom, useRecoilState } from 'recoil';
+
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
@@ -21,6 +24,8 @@ import {
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 import CloseCircle from '@spectrum-icons/workflow/CloseCircle';
+
+import { update, set } from '../../reducers/data';
 
 import './Player.css';
 import 'react-resizable/css/styles.css';
@@ -45,7 +50,11 @@ const readyState = atom({
   default: false,
 });
 
-const Player = (props, ref) => {
+const Player = ({ data: { items }, set, update }, ref) => {
+  const { id } = useParams();
+  const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+  const { url } = item ?? {};
+
   const [, setDuration] = useRecoilState(durationState);
   const [, setProgress] = useRecoilState(progressState);
   const [, setReady] = useRecoilState(readyState);
@@ -53,7 +62,8 @@ const Player = (props, ref) => {
 
   const [text, setText] = useState('');
   const [type, setType] = useState('video');
-  const [url, setUrl] = useState(null);
+
+  const setUrl = useCallback(url => set([id, 'url', url]), [id, set]);
 
   const isValid = useMemo(() => ReactPlayer.canPlay(text), [text]);
   const config = useMemo(
@@ -98,70 +108,75 @@ const Player = (props, ref) => {
   const fileInput = useRef(null);
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
 
-  return url ? (
-    <Draggable handle=".drag-handle" positionOffset={{ x: '10px', y: '0' }} forwardedRef={ref}>
-      <ResizableBox width={300} height={194} minConstraints={[200, 113]} maxConstraints={[720, 480]}>
-        <>
-          <ReactPlayer
-            controls
-            progressInterval={75}
-            {...{ ref, url, config, playing, onPlay, onPause, onDuration, onProgress, onReady, onError }}
-          />
-          <span className="drag-handle"></span>
-          <ActionButton aria-label="Close player" isQuiet onPress={reset}>
-            <CloseCircle />
-          </ActionButton>
-        </>
-      </ResizableBox>
-    </Draggable>
-  ) : (
-    <Well marginX="size-500">
-      <IllustratedMessage>
-        <NotFound />
-        <Heading>No Media</Heading>
-        <Content>
-          <Flex direction="column" gap="size-50">
-            <Text>Choose</Text>
-            <ActionButton onPress={triggerFileInput}>media file</ActionButton>
-            <input
-              type="file"
-              accept="audio/*, video/*"
-              onChange={loadFile}
-              ref={fileInput}
-              pip={true}
-              aria-label="Choose media file"
+  return item ? (
+    url ? (
+      <Draggable handle=".drag-handle" positionOffset={{ x: '10px', y: '0' }} forwardedRef={ref}>
+        <ResizableBox width={300} height={194} minConstraints={[200, 113]} maxConstraints={[720, 480]}>
+          <>
+            <ReactPlayer
+              controls
+              progressInterval={75}
+              {...{ ref, url, config, playing, onPlay, onPause, onDuration, onProgress, onReady, onError }}
             />
+            <span className="drag-handle"></span>
+            <ActionButton aria-label="Close player" isQuiet onPress={reset}>
+              <CloseCircle />
+            </ActionButton>
+          </>
+        </ResizableBox>
+      </Draggable>
+    ) : (
+      <Well marginX="size-500">
+        <IllustratedMessage>
+          <NotFound />
+          <Heading>No Media</Heading>
+          <Content>
+            <Flex direction="column" gap="size-50">
+              <Text>Choose</Text>
+              <ActionButton isDisabled={!item} onPress={triggerFileInput}>
+                media file
+              </ActionButton>
+              <input
+                type="file"
+                accept="audio/*, video/*"
+                onChange={loadFile}
+                ref={fileInput}
+                pip={true}
+                aria-label="Choose media file"
+              />
 
-            <Text>or</Text>
-            <DialogTrigger type="popover">
-              <ActionButton>URL</ActionButton>
-              {close => (
-                <Dialog>
-                  <Content>
-                    <TextField
-                      label="URL"
-                      width="100%"
-                      value={text}
-                      onChange={setText}
-                      validationState={isValid ? 'valid' : 'invalid'}
-                    />
-                  </Content>
-                  <ButtonGroup>
-                    <Button variant="secondary" onPress={close}>
-                      Cancel
-                    </Button>
-                    <Button variant="cta" onPress={() => setUrl(text)} isDisabled={!isValid}>
-                      Load
-                    </Button>
-                  </ButtonGroup>
-                </Dialog>
-              )}
-            </DialogTrigger>
-          </Flex>
-        </Content>
-      </IllustratedMessage>
-    </Well>
-  );
+              <Text>or</Text>
+              <DialogTrigger type="popover">
+                <ActionButton isDisabled={!item}>URL</ActionButton>
+                {close => (
+                  <Dialog>
+                    <Content>
+                      <TextField
+                        autoFocus
+                        label="URL"
+                        width="100%"
+                        value={text}
+                        onChange={setText}
+                        validationState={isValid ? 'valid' : 'invalid'}
+                      />
+                    </Content>
+                    <ButtonGroup>
+                      <Button variant="secondary" onPress={close}>
+                        Cancel
+                      </Button>
+                      <Button variant="cta" onPress={() => setUrl(text)} isDisabled={!isValid}>
+                        Load
+                      </Button>
+                    </ButtonGroup>
+                  </Dialog>
+                )}
+              </DialogTrigger>
+            </Flex>
+          </Content>
+        </IllustratedMessage>
+      </Well>
+    )
+  ) : null;
 };
 
-export default forwardRef(Player);
+export default connect(({ data }) => ({ data }), { update, set })(forwardRef(Player));
