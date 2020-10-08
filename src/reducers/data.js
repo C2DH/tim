@@ -45,6 +45,8 @@ const dataSlice = createSlice({
       return state;
     },
     add: (state, { payload }) => {
+      const index = state.items.findIndex(({ id }) => id === payload.id);
+      if (index > 0) state.items.splice(index, 1);
       state.items.push(payload);
       return state;
     },

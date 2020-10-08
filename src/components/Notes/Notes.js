@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
 import timecode from 'smpte-timecode';
-
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, Node, Text, Range, createEditor } from 'slate';
@@ -265,7 +265,7 @@ const Notes = ({ data: { items }, update, set, player }) => {
     return ranges;
   }, []);
 
-  return (
+  return notes ? (
     <Flex direction="row" gap="size-100">
       <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
         <Content margin="size-100">
@@ -280,6 +280,8 @@ const Notes = ({ data: { items }, update, set, player }) => {
         <Toolbar />
       </View>
     </Flex>
+  ) : (
+    <Redirect to="/new" />
   );
 };
 
