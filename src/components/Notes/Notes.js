@@ -6,6 +6,7 @@ import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
 import timecode from 'smpte-timecode';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, Node, Text, Range, createEditor } from 'slate';

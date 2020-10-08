@@ -179,4 +179,4 @@ const Player = ({ data: { items }, set, update }, ref) => {
   ) : null;
 };
 
-export default connect(({ data }) => ({ data }), { update, set })(forwardRef(Player));
+export default connect(({ data }) => ({ data }), { update, set }, null, { forwardRef: true })(forwardRef(Player));
