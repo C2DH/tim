@@ -21,7 +21,7 @@ export const configureAppStore = preloadedState => {
       // RavenMiddleware(SENTRY_DSN),
       logger,
       save({
-        namespace: 'TIM-02',
+        namespace: 'TIM-03',
         states: ['data'],
         debounce: 1000,
       }),
@@ -29,7 +29,7 @@ export const configureAppStore = preloadedState => {
     ],
     // preloadedState,
     preloadedState: load({
-      namespace: 'TIM-02',
+      namespace: 'TIM-03',
       states: ['data'],
       preloadedState,
     }),
