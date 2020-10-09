@@ -90,7 +90,7 @@ const Transcript = ({ data: { items }, player, set }) => {
             </ActionButton>
             <input
               type="file"
-              accept="text/*, application/json, *.json, text/vtt, *.vtt, text/srt, *.srt"
+              accept="text/*, application/json, *.json, text/vtt, *.vtt, text/srt, *.srt, text/plain, *.txt"
               onChange={loadFile}
               ref={fileInput}
               aria-label="Choose transcript file"
@@ -114,6 +114,9 @@ const Transcript = ({ data: { items }, player, set }) => {
               <Section title="Captions">
                 <Item key="srt">SRT</Item>
                 <Item key="vtt">WebVTT</Item>
+              </Section>
+              <Section title="Text">
+                <Item key="text">Plain Text</Item>
               </Section>
             </Picker>
             <ActionButton isDisabled={!format || !isValid} onPress={loadTranscript}>

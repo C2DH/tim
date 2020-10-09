@@ -1,11 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import timecode from 'smpte-timecode';
+
+import { Flex, View, Content, ActionGroup, Item, ActionButton, Switch as Toggle } from '@adobe/react-spectrum';
 
 import Karaoke from './Karaoke';
 
 import './TranscriptPlayer.css';
 
 const TranscriptPlayer = ({ transcript, player }) => {
+  const [timecodesVisible, setTimecodesVisible] = useState(false);
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
 
   const handleClick = useCallback(
@@ -24,29 +27,44 @@ const TranscriptPlayer = ({ transcript, player }) => {
     const { anchorNode } = selection;
 
     const node = anchorNode.nodeType === document.TEXT_NODE ? anchorNode.parentNode : anchorNode;
-    const start = node.getAttribute('data-start') ?? 0;
+    const start = node.getAttribute('data-start');
 
-    const tc = timecode(start * 1e3, 1e3);
-    const [hh, mm, ss, mmm] = tc.toString().split(':');
+    if (!!start) {
+      const tc = timecode(start * 1e3, 1e3);
+      const [hh, mm, ss, mmm] = tc.toString().split(':');
 
-    event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
-    event.preventDefault();
+      event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
+      event.preventDefault();
+    }
   }, []);
 
   return (
-    <div className="transcript" onClick={handleClick} onCopy={handleCopy}>
-      <Karaoke transcript={transcript} />
-      {transcript.map(({ id, start, end, items }) => {
-        return (
-          <p key={id} data-segment={id} data-start={start} data-end={end}>
-            {items.map(({ id, text, start, end }) => (
-              <span key={id} data-item={id} data-start={start} data-end={end}>
-                {text}{' '}
-              </span>
-            ))}
-          </p>
-        );
-      })}
+    <div>
+      <Toggle isSelected={timecodesVisible} onChange={setTimecodesVisible}>
+        Timecodes
+      </Toggle>
+      <div className={`transcript timecodes-${timecodesVisible}`} onClick={handleClick} onCopy={handleCopy}>
+        <Karaoke transcript={transcript} />
+        {transcript.map(({ id, start, end, items }) => {
+          let tc = '';
+          if (!!start) {
+            const [hh, mm, ss, mmm] = timecode(start * 1e3, 1e3)
+              .toString()
+              .split(':');
+            tc = `${hh}:${mm}:${ss}`;
+          }
+
+          return (
+            <p key={id} data-segment={id} data-start={start} data-end={end} data-tc={tc}>
+              {items.map(({ id, text, start, end }) => (
+                <span key={id} data-item={id} data-start={start} data-end={end}>
+                  {text}{' '}
+                </span>
+              ))}
+            </p>
+          );
+        })}
+      </div>
     </div>
   );
 };

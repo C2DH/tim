@@ -3,3 +3,10 @@
   font-size: 12px;
   font-weight: bold;
 }
+
+.transcript.timecodes-true p::before {
+  display: block;
+  font-size: 9px;
+  font-weight: normal;
+  content: attr(data-tc);
+}

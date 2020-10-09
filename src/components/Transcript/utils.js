@@ -221,6 +221,25 @@ export const parse = (data, format) => {
           reject(error);
         }
       });
+
+    case 'text':
+      return new Promise((resolve, reject) => {
+        try {
+          resolve(
+            data.split(/\r?\n/).map((text, segmentIndex) => ({
+              text,
+              id: `s${segmentIndex}`,
+              items: text.split(' ').map((text, index) => ({
+                text,
+                id: `i${segmentIndex}-${index}`,
+              })),
+            }))
+          );
+        } catch (error) {
+          reject(error);
+        }
+      });
+
     default:
       console.warn('format not handled', format);
       throw new Error('format not handled');
