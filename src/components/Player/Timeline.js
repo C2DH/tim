@@ -23,7 +23,7 @@ const Markers = ({ duration, timecodes }) =>
       ))
     : null;
 
-const Timeline = ({ player, item: { metadata = [] }, set }) => {
+const Timeline = ({ player, item: { metadata = [] } = {}, set }) => {
   const duration = useRecoilValue(durationState);
   const progress = useRecoilValue(progressState);
 
