@@ -19,7 +19,11 @@ const progressState = atom({
 const Markers = ({ duration, timecodes }) =>
   duration
     ? timecodes.map(({ title, timecode, time, section }) => (
-        <div title={title} className={`marker section-${section}`} style={{ left: (100 * time) / duration }}></div>
+        <div
+          title={title}
+          className={`marker section-${section}`}
+          style={{ left: `${(100 * time) / duration}%` }}
+        ></div>
       ))
     : null;
 
