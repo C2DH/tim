@@ -29,11 +29,11 @@ const Timeline = ({ player, item: { metadata = [] }, set }) => {
 
   const timecodes = useMemo(
     () => [
-      ...metadata.map(({ section, timecode, time, title, lines }) => ({
+      ...metadata.map(({ section, timecode, time, title, lines }, index) => ({
         section: true,
         timecode,
         time,
-        title: title ? lines.find(({ index }) => index === title)?.line : timecode,
+        title: title ? lines.find(({ index }) => index === title)?.line : `Segment ${index + 1}`,
       })),
       ...metadata.flatMap(({ lines }) =>
         lines.flatMap(({ timecodes, times }) =>
