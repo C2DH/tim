@@ -11,3 +11,17 @@
   background-color: #1473e6;
   position: absolute;
 }
+
+.marker {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: lightblue;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.marker.section-true {
+  background-color: orange;
+  z-index: 20;
+}

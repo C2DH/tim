@@ -14,7 +14,7 @@ import { withHistory } from 'slate-history';
 
 import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
 
-import { update, set } from '../../reducers/data';
+import { update, set, setNotes } from '../../reducers/data';
 import Leaf from './Leaf';
 import Toolbar from './Toolbar';
 
@@ -69,29 +69,79 @@ import './Notes.css';
       lookbehind: !0,
       inside: { punctuation: /^[*_]|[*_]$/ },
     },
-    timecode: {
-      pattern: /\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s*\w)/,
-      lookbehind: !0,
-      // inside: { punctuation: /^[*_]|[*_]$/ },
-      // alias: "timecode"
-    },
-    timecodeL: {
-      pattern: /(?<!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=$)/,
-      lookbehind: !0,
-      // inside: { punctuation: /^[*_]|[*_]$/ },
-      // alias: "timecode"
-    },
-    timecode3: {
-      pattern: /^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s*$)/,
-      lookbehind: !0,
-      // inside: { punctuation: /^[*_]|[*_]$/ },
-      // alias: "timecode"
-    },
-    timecode2: {
-      pattern: /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/,
-      lookbehind: !0,
-      // inside: { punctuation: /^[*_]|[*_]$/ },
-    },
+    timecode: [
+      {
+        pattern: /\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /\[(?:\d):(?:[012345]\d)\](?=\s+)/,
+        alias: 'timecode',
+      },
+      //
+      {
+        pattern: /(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/,
+        alias: 'timecode',
+      },
+      {
+        pattern: /(?!^)\[(?:\d):(?:[012345]\d)\]/,
+        alias: 'timecode',
+      },
+    ],
+    // title
+    timecoderow: [
+      {
+        pattern: /^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]$/,
+        alias: 'timecoderow',
+      },
+      {
+        pattern: /^\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]$/,
+        alias: 'timecoderow',
+      },
+      {
+        pattern: /^\[(?:[012345]\d):(?:[012345]\d)\]$/,
+        alias: 'timecoderow',
+      },
+      {
+        pattern: /^\[(?:\d):(?:[012345]\d)\]$/,
+        alias: 'timecoderow',
+      },
+    ],
+    // pink
+    timecodesimple: [
+      {
+        pattern: /(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/,
+        alias: 'timecodesimple',
+      },
+      {
+        pattern: /(?:\d):(?:[012345]\d):(?:[012345]\d)/,
+        alias: 'timecodesimple',
+      },
+      {
+        pattern: /(?:[012345]\d):(?:[012345]\d)/,
+        alias: 'timecodesimple',
+      },
+      {
+        pattern: /(?:\d):(?:[012345]\d)/,
+        alias: 'timecodesimple',
+      },
+    ],
     url: {
       pattern: /!?\[[^\]]+\](?:\([^\s)]+(?:[\t ]+"(?:\\.|[^"\\])*")?\)| ?\[[^\]\n]*\])/,
       inside: {
@@ -143,7 +193,7 @@ const isSynopsisActive = editor => {
   return !!synopsis;
 };
 
-const Notes = ({ data: { items }, update, set, player }) => {
+const Notes = ({ data: { items }, update, set, setNotes, player }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { notes } = item ?? {};
@@ -165,11 +215,27 @@ const Notes = ({ data: { items }, update, set, player }) => {
     event => {
       const target = event.nativeEvent.srcElement;
       if (target.nodeName === 'SPAN') {
-        const text = target.innerText.replace(/\[|\]/g, '').trim();
-        let tc = null;
+        const text = target.innerText.trim();
+        const timecodes = [
+          ...text.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
+          ...text.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
+          ...text.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\]/g)),
+          ...text.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\]/g)),
+          ...text.matchAll(new RegExp(/(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/g)),
+          ...text.matchAll(new RegExp(/(?:\d):(?:[012345]\d):(?:[012345]\d)/g)),
+          ...text.matchAll(new RegExp(/(?:[012345]\d):(?:[012345]\d)/g)),
+          ...text.matchAll(new RegExp(/(?:\d):(?:[012345]\d)/g)),
+        ];
 
+        if (timecodes.length === 0) return;
+
+        let [ss, mm, hh = '00'] = timecodes[0][0].replace(/\[|\]/g, '').split(':').reverse();
+        if (hh.length === 1) hh = `0${hh}`;
+        if (mm.length === 1) mm = `0${mm}`;
+
+        let tc = null;
         try {
-          tc = timecode(`${text}:00`, 1e3);
+          tc = timecode(`${hh}:${mm}:${ss}:00`, 1e3);
         } catch (ignored) {}
 
         tc && seekTo(tc.frameCount / 1e3);
@@ -191,9 +257,9 @@ const Notes = ({ data: { items }, update, set, player }) => {
       //   // ...
       // }
 
-      set([id, 'notes', notes]);
+      setNotes([id, notes]);
     },
-    [id, set, editor, setIsTitle, setIsSynopsis]
+    [id, setNotes, editor, setIsTitle, setIsSynopsis]
   );
 
   const onKeyDown = useCallback(
@@ -286,4 +352,4 @@ const Notes = ({ data: { items }, update, set, player }) => {
   );
 };
 
-export default connect(({ data }) => ({ data }), { update, set })(Notes);
+export default connect(({ data }) => ({ data }), { update, set, setNotes })(Notes);

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import timecode from 'smpte-timecode';
 
 const initialState = {
   items: [
@@ -31,6 +32,87 @@ const initialState = {
   ],
 };
 
+const string2tc = text => {
+  let [ss, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
+  if (hh.length === 1) hh = `0${hh}`;
+  if (mm.length === 1) mm = `0${mm}`;
+
+  let tc = null;
+  try {
+    tc = timecode(`${hh}:${mm}:${ss}:00`, 1e3);
+  } catch (ignored) {}
+
+  return tc;
+};
+
+const tc2time = tc => tc.frameCount / 1e3;
+
+const tc2string = tc => tc.toString().split(':').slice(0, 3).join(':');
+
+const notes2metadata = notes => {
+  const lines = notes.map(({ children }) => children.map(({ text }, index) => text).join('\n'));
+  const sections = lines
+    .reduce((acc, line, index) => {
+      let matches = [
+        ...line.matchAll(new RegExp(/^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]$/g)),
+        ...line.matchAll(new RegExp(/^\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]$/g)),
+        ...line.matchAll(new RegExp(/^\[(?:[012345]\d):(?:[012345]\d)\]$/g)),
+        ...line.matchAll(new RegExp(/^\[(?:\d):(?:[012345]\d)\]$/g)),
+      ];
+
+      if (index === 0 && matches.length === 0) matches = [['[00:00:00]']];
+
+      if (matches.length > 0) {
+        const tc = string2tc(matches[0][0]);
+
+        return [
+          ...acc,
+          {
+            index,
+            timecode: tc2string(tc),
+            time: tc2time(tc),
+            line,
+            lines: [],
+            matches,
+          },
+        ];
+      }
+
+      matches = [
+        ...line.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...line.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...line.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...line.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...line.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...line.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...line.matchAll(new RegExp(/(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...line.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d)\]/g)),
+      ];
+
+      const timecodes = matches.map(([text]) => string2tc(text));
+
+      const prev = acc.pop();
+      prev.lines.push({
+        index,
+        line,
+        empty: line === '',
+        timecodes: timecodes.map(tc => tc2string(tc)),
+        times: timecodes.map(tc => tc2time(tc)),
+        matches,
+      });
+
+      return [...acc, prev];
+    }, [])
+    .map(section => ({
+      ...section,
+      title: section.lines.find(({ line }) => line.match(/(^\s*)#+.+/m))?.index,
+    }));
+
+  console.log({ sections });
+
+  return sections;
+};
+
 const dataSlice = createSlice({
   name: 'data',
   initialState,
@@ -40,6 +122,14 @@ const dataSlice = createSlice({
     set: (state, { payload: [id, key, value] }) => {
       const index = state.items.findIndex(({ id: id_ }) => id_ === id);
       state.items[index][key] = value;
+      state.items[index].updated = Date.now();
+
+      return state;
+    },
+    setNotes: (state, { payload: [id, notes] }) => {
+      const index = state.items.findIndex(({ id: id_ }) => id_ === id);
+      state.items[index].notes = notes;
+      state.items[index].metadata = notes2metadata(notes);
       state.items[index].updated = Date.now();
 
       return state;
@@ -55,5 +145,5 @@ const dataSlice = createSlice({
 });
 
 const { actions, reducer } = dataSlice;
-export const { update, set, add, reset } = actions;
+export const { update, set, setNotes, add, reset } = actions;
 export default reducer;

@@ -14,14 +14,15 @@ const Metadata = ({ data, update }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 
-  // const text = data.notes.map(({ children }) => children.map(({ text }) => text).join('\n')).join('\n');
-  // const md = new Md();
-  // const parsed = md.parse(text, {});
+  const text = item.notes.map(({ children }) => children.map(({ text }) => text).join('\n')).join('\n');
+  const md = new Md();
+  const parsed = md.parse(text, {});
 
   return (
     <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
       <Content margin="size-100">
         <h1>{item.title}</h1>
+        <pre>{JSON.stringify(parsed, null, 2)}</pre>
       </Content>
     </View>
   );

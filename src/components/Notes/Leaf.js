@@ -51,21 +51,14 @@ const Leaf = ({ attributes, children, leaf }) => {
           padding: 3px;
           cursor: pointer;
         `}
-        ${leaf.timecodeL &&
-        css`
-          font-family: monospace;
-          background-color: lightblue;
-          padding: 3px;
-          cursor: pointer;
-        `}
-        ${leaf.timecode2 &&
+        ${leaf.timecodesimple &&
         css`
           font-family: monospace;
           background-color: lightpink;
           padding: 3px;
           cursor: pointer;
         `}
-        ${leaf.timecode3 &&
+        ${leaf.timecoderow &&
         css`
           border-top: 2px solid #ddd;
           font-family: monospace;

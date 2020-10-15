@@ -40,6 +40,8 @@ import SaveFloppy from '@spectrum-icons/workflow/SaveFloppy';
 import Export from '@spectrum-icons/workflow/Export';
 import Settings from '@spectrum-icons/workflow/Settings';
 
+import Timeline from './Timeline';
+
 import './Transport.css';
 
 const durationState = atom({
@@ -96,16 +98,6 @@ const Transport = ({ player, data: { items }, set }) => {
   const rwd = useCallback(() => player.current?.seekTo(progress - 1, 'seconds'), [player, progress]);
 
   const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
-
-  const timeline = useRef(null);
-
-  const handleTimelineClick = useCallback(
-    ({ nativeEvent: { clientX } }) => {
-      const { width } = timeline.current?.getClientRects()[0];
-      player.current?.seekTo((duration * clientX) / width, 'seconds');
-    },
-    [timeline, duration, player]
-  );
 
   const save = useCallback(() => fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`), [item]);
 
@@ -235,11 +227,7 @@ const Transport = ({ player, data: { items }, set }) => {
         </DialogTrigger>
       </Flex>
 
-      <Flex direction="row" marginTop="size-150">
-        <div className="timeline" onClick={handleTimelineClick} ref={timeline}>
-          <div className="progress" style={{ width: `${duration === 0 ? 0 : (100 * progress) / duration}%` }}></div>
-        </div>
-      </Flex>
+      <Timeline {...{ player, item }} />
     </>
   );
 };
