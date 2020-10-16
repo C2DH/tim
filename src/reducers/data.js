@@ -99,14 +99,26 @@ const notes2metadata = notes => {
         timecodes: timecodes.map(tc => tc2string(tc)),
         times: timecodes.map(tc => tc2time(tc)),
         matches,
+        keywords: [...line.matchAll(/(^|[^\\])(\*\*|__)(?:(?:\r?\n|\r)(?!\r?\n|\r)|.)+?\2/g)],
       });
 
       return [...acc, prev];
     }, [])
-    .map(section => ({
-      ...section,
-      title: section.lines.find(({ line }) => line.match(/(^\s*)#+.+/m))?.index,
-    }));
+    .map(section => {
+      const title = section.lines.find(({ line }) => line.match(/(^\s*)#+.+/m));
+      const synopsis = section.lines.filter(({ line }) => line.match(/^>(?:[\t ]*>)*/m));
+
+      const nonNotes = [title?.index, ...synopsis.map(({ index }) => index)];
+      const notes = section.lines.filter(({ index }) => !nonNotes.includes(index));
+
+      return {
+        ...section,
+        title,
+        synopsis,
+        notes,
+        keywords: section.lines.flatMap(({ keywords }) => keywords),
+      };
+    });
 
   console.log({ sections });
 

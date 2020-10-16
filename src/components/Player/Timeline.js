@@ -18,9 +18,10 @@ const progressState = atom({
 
 const Markers = ({ duration, timecodes }) =>
   duration
-    ? timecodes.map(({ title, timecode, time, section }) => (
+    ? timecodes.map(({ title, timecode, time, section }, index) => (
         <div
           title={title}
+          key={`${index}-${time}`}
           className={`marker section-${section}`}
           style={{ left: `${(100 * time) / duration}%` }}
         ></div>
@@ -37,7 +38,7 @@ const Timeline = ({ player, item: { metadata = [] } = {}, set }) => {
         section: true,
         timecode,
         time,
-        title: title ? lines.find(({ index }) => index === title)?.line : `Segment ${index + 1}`,
+        title: title ? title.line : `Segment ${index + 1}`,
       })),
       ...metadata.flatMap(({ lines }) =>
         lines.flatMap(({ timecodes, times }) =>
@@ -51,8 +52,6 @@ const Timeline = ({ player, item: { metadata = [] } = {}, set }) => {
     ],
     [metadata]
   );
-
-  console.log(metadata, timecodes);
 
   const timeline = useRef(null);
 

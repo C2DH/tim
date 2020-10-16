@@ -1,0 +1,8 @@
+.segment + .segment {
+  border-top: 1px solid lightgrey;
+}
+
+pre {
+  background-color: #eeeeee;
+  border: 1px solid white;
+}
