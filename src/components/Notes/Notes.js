@@ -333,10 +333,10 @@ const Notes = ({ data: { items }, update, set, setNotes, player }) => {
   }, []);
 
   return notes ? (
-    <Flex direction="row" gap="size-100">
+    <Flex direction="row" gap="size-100" height="100%">
       <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
         <Content margin="size-100">
-          <div onClick={handleClick}>
+          <div onClick={handleClick} UNSAFE_style={{ overflowY: 'scroll' }}>
             <Slate editor={editor} value={notes} onChange={handleChange}>
               <Editable autoFocus placeholder="Write some markdown…" {...{ decorate, renderLeaf, onKeyDown }} />
             </Slate>
