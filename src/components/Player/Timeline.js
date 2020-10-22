@@ -38,16 +38,10 @@ const Timeline = ({ player, item: { metadata = [] } = {}, set }) => {
         section: true,
         timecode,
         time,
-        title: title ? title.line : `Segment ${index + 1}`,
+        title,
       })),
-      ...metadata.flatMap(({ lines }) =>
-        lines.flatMap(({ timecodes, times }) =>
-          timecodes.map((timecode, index) => ({
-            timecode,
-            time: times[index],
-            title: timecode,
-          }))
-        )
+      ...metadata.flatMap(({ timecodes }) =>
+        timecodes.map(({ time, timecode }) => ({ time, timecode, title: timecode }))
       ),
     ],
     [metadata]

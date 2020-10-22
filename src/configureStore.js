@@ -7,6 +7,8 @@ import rootReducer from './reducers';
 
 // const SENTRY_DSN = null;
 
+if (localStorage.getItem('TIM-06_data')) localStorage.clear();
+
 const logger = createLogger({
   predicate: (state, action) => !['update', 'timeupdate'].includes(action.type),
   duration: true,
@@ -21,7 +23,7 @@ export const configureAppStore = preloadedState => {
       // RavenMiddleware(SENTRY_DSN),
       logger,
       save({
-        namespace: 'TIM-06',
+        namespace: 'TIM-07',
         states: ['data'],
         debounce: 1000,
       }),
@@ -29,7 +31,7 @@ export const configureAppStore = preloadedState => {
     ],
     // preloadedState,
     preloadedState: load({
-      namespace: 'TIM-06',
+      namespace: 'TIM-07',
       states: ['data'],
       preloadedState,
     }),

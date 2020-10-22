@@ -51,7 +51,7 @@ const tc2string = tc => tc.toString().split(':').slice(0, 3).join(':');
 
 const notes2metadata = notes => {
   const lines = notes.map(({ children }) => children.map(({ text }, index) => text).join('\n'));
-  const sections = lines
+  const segments = lines
     .reduce((acc, line, index) => {
       let matches = [
         ...line.matchAll(new RegExp(/^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]$/g)),
@@ -71,9 +71,9 @@ const notes2metadata = notes => {
             index,
             timecode: tc2string(tc),
             time: tc2time(tc),
-            line,
+            // line,
             lines: [],
-            matches,
+            // matches,
           },
         ];
       }
@@ -104,26 +104,80 @@ const notes2metadata = notes => {
 
       return [...acc, prev];
     }, [])
-    .map(section => {
-      const title = section.lines.find(({ line }) => line.match(/(^\s*)#+.+/m));
-      const synopsis = section.lines.filter(({ line }) => line.match(/^>(?:[\t ]*>)*/m));
+    .map((segment, index) => {
+      const title = segment.lines.find(({ line }) => line.match(/(^\s*)#+.+/m));
+      const synopsis = segment.lines.filter(({ line }) => line.match(/^>(?:[\t ]*>)*/m));
 
       const nonNotes = [title?.index, ...synopsis.map(({ index }) => index)];
-      const notes = section.lines.filter(({ index }) => !nonNotes.includes(index));
+      const notes = segment.lines.filter(({ index }) => !nonNotes.includes(index));
 
       return {
-        ...section,
-        title,
-        synopsis,
-        notes,
-        keywords: section.lines.flatMap(({ keywords }) => keywords),
+        ...segment,
+        timecodes: [
+          ...segment.lines.flatMap(({ timecodes, times }) =>
+            timecodes.map((timecode, index) => ({ timecode, time: times[index] }))
+          ),
+        ],
+        title: title ? title.line.replace(/#/g, '').trim() : `Segment ${index + 1}`,
+        synopsis: synopsis
+          ? synopsis
+              .map(({ line }) => line.replace(/^>|\*\*/g, '').trim())
+              .join('\n')
+              .replace(/\n\n+/g, '\n\n')
+              .trim()
+          : '',
+        notes: notes
+          ? notes
+              .map(({ line }) => line.replace(/^>|\*\*/g, '').trim())
+              .join('\n')
+              .replace(/\n\n+/g, '\n\n')
+              .trim()
+          : '',
+        keywords: [
+          ...new Set(
+            segment.lines
+              .flatMap(({ keywords }) => keywords)
+              .map(([keyword]) => keyword.trim())
+              .join(',')
+              .replace(/\*/g, '')
+              .split(',')
+              .map(k => k.trim())
+          ),
+        ].join(', '),
       };
     });
 
-  console.log({ sections });
+  console.log({ segments });
 
-  return sections;
+  return segments;
 };
+
+const metadata2notes = metadata =>
+  metadata
+    .map(({ timecode, title, synopsis, notes, keywords }) => {
+      const lines = [
+        `[${timecode}]`,
+        `# ${title.trim()}`,
+        synopsis
+          .trim()
+          .split('\n')
+          .map(line => `> ${line}`)
+          .join('\n'),
+        notes
+          .trim()
+          .split('\n')
+          .map(line => line)
+          .join('\n'),
+        keywords ? `**${keywords.trim()}**` : '',
+      ];
+
+      return lines.join('\n\n');
+    })
+    .join('\n')
+    .split('\n')
+    .map(text => ({
+      children: [{ text }],
+    }));
 
 const dataSlice = createSlice({
   name: 'data',
@@ -152,10 +206,18 @@ const dataSlice = createSlice({
       state.items.push(payload);
       return state;
     },
+    setMetadata: (state, { payload: [id, index, key, value] }) => {
+      const idx = state.items.findIndex(({ id: id_ }) => id_ === id);
+      const idx2 = state.items[idx].metadata.findIndex(({ index: index_ }) => index_ === index);
+      state.items[idx].metadata[idx2][key] = value;
+      console.log(metadata2notes(state.items[idx].metadata));
+      state.items[idx].notes = metadata2notes(state.items[idx].metadata);
+      state.items[idx].updated = Date.now();
+    },
     reset: () => initialState,
   },
 });
 
 const { actions, reducer } = dataSlice;
-export const { update, set, setNotes, add, reset } = actions;
+export const { update, set, setNotes, add, reset, setMetadata } = actions;
 export default reducer;

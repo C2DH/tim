@@ -205,10 +205,6 @@ const Notes = ({ data: { items }, update, set, setNotes, player }) => {
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  // debug
-  window.editor = editor;
-  window.Editor = Editor;
-
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
 
   const handleClick = useCallback(
