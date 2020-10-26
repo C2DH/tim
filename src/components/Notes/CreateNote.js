@@ -8,7 +8,7 @@ import { Heading, Content, ActionButton, Text, Flex, Picker, Item } from '@adobe
 import { add } from '../../reducers/data';
 import { parse } from './utils';
 
-const CreateNote = ({ add }) => {
+const CreateNote = ({ data: { items = [] }, add }) => {
   const history = useHistory();
 
   const [file, setFile] = useState(null);
@@ -21,7 +21,7 @@ const CreateNote = ({ add }) => {
         await parse(file, format);
         setIsValid(true);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         setIsValid(false);
       }
     };
@@ -58,7 +58,7 @@ const CreateNote = ({ add }) => {
 
     add({
       id,
-      title: `Note ${new Date().toISOString()}`,
+      title: `Untitled ${items.length + 1}`,
       url: null,
       notes: [
         {
@@ -71,7 +71,7 @@ const CreateNote = ({ add }) => {
     });
 
     history.push(`/notes/${id}`);
-  }, [add, history]);
+  }, [add, history, items]);
 
   return (
     <Flex direction="row" gap="size-100">

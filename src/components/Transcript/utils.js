@@ -242,6 +242,5 @@ export const parse = (data, format) => {
 
     default:
       console.warn('format not handled', format);
-      throw new Error('format not handled');
   }
 };

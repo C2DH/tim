@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
-import { useEditor } from 'slate-react';
+// import { useEditor } from 'slate-react';
 // import { Editor, Node, Text, Range, createEditor } from 'slate';
 
 import { ActionGroup, Item } from '@adobe/react-spectrum';
 
-import Comment from '@spectrum-icons/workflow/Comment';
+// import Comment from '@spectrum-icons/workflow/Comment';
 import Clock from '@spectrum-icons/workflow/Clock';
 import TextParagraph from '@spectrum-icons/workflow/TextParagraph';
 import ViewList from '@spectrum-icons/workflow/ViewList';

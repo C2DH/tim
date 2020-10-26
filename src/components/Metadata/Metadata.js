@@ -1,25 +1,48 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Flex, View, Content, ActionGroup, Item, TextField, TextArea } from '@adobe/react-spectrum';
+import { Flex, View, Content, TextField, TextArea, ActionButton } from '@adobe/react-spectrum';
+import TreeCollapse from '@spectrum-icons/workflow/TreeCollapse';
+import TreeExpand from '@spectrum-icons/workflow/TreeExpand';
+
+import TextareaAutosize from 'react-autosize-textarea';
 
 import { setMetadata } from '../../reducers/data';
 
 import './Metadata.css';
 
 const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, setMetadata }) => {
+  const [collapsed, setCollapsed] = useState(false);
+
   const setTitle = useCallback(title => setMetadata([id, index, 'title', title]), [id, index, setMetadata]);
-  const setSynopsis = useCallback(synopsis => setMetadata([id, index, 'synopsis', synopsis]), [id, index, setMetadata]);
-  const setNotes = useCallback(notes => setMetadata([id, index, 'notes', notes]), [id, index, setMetadata]);
+  const setSynopsis = useCallback(({ currentTarget: { value } }) => setMetadata([id, index, 'synopsis', value]), [
+    id,
+    index,
+    setMetadata,
+  ]);
+  const setNotes = useCallback(({ currentTarget: { value } }) => setMetadata([id, index, 'notes', value]), [
+    id,
+    index,
+    setMetadata,
+  ]);
   const setKeywords = useCallback(keywords => setMetadata([id, index, 'keywords', keywords]), [id, index, setMetadata]);
 
   return (
     <div className="segment" data-time={time} data-timecode={timecode}>
       <h4>{timecode}</h4>
       <TextField label="Title" value={title} width="100%" onChange={setTitle} />
-      <TextArea label="Synopsis" value={synopsis} width="100%" onChange={setSynopsis} />
-      <TextArea label="Notes" value={notes} width="100%" onChange={setNotes} />
+      <label>
+        Synopsis
+        <TextareaAutosize value={synopsis} onChange={setSynopsis} />
+      </label>
+      <label>
+        <span onClick={() => setCollapsed(!collapsed)}>
+          {collapsed ? <TreeExpand size="XS" /> : <TreeCollapse size="XS" />}
+        </span>
+        Notes
+        {collapsed ? null : <TextareaAutosize value={notes} onChange={setNotes} />}
+      </label>
       <TextField label="Keywords" value={keywords} width="100%" onChange={setKeywords} />
     </div>
   );
@@ -33,13 +56,15 @@ const Metadata = ({ data, setMetadata }) => {
   const { metadata = [] } = item ?? {};
 
   return (
-    <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
-      <Content margin="size-100">
-        {metadata.map((segment, index) => (
-          <Segment key={`${index}-${segment.time}`} {...segment} setMetadata={setMetadata} id={id} />
-        ))}
-      </Content>
-    </View>
+    <Flex direction="row" gap="size-100" height="100%">
+      <View gap="size-100" flex UNSAFE_style={{ overflowY: 'scroll' }}>
+        <Content margin="size-200">
+          {metadata.map((segment, index) => (
+            <Segment key={`${index}-${segment.time}`} {...segment} setMetadata={setMetadata} id={id} />
+          ))}
+        </Content>
+      </View>
+    </Flex>
   );
 };
 

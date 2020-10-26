@@ -141,7 +141,6 @@ const Player = ({ data: { items }, set, update }, ref) => {
                 accept="audio/*, video/*"
                 onChange={loadFile}
                 ref={fileInput}
-                pip={true}
                 aria-label="Choose media file"
               />
 

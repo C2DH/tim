@@ -5,14 +5,14 @@ import { useParams } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
 import timecode from 'smpte-timecode';
-import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
-import { Editor, Node, Text, Range, createEditor } from 'slate';
+import { Editor, Text, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 
-import { Flex, View, Content, ActionGroup, Item } from '@adobe/react-spectrum';
+import { Flex, View, Content } from '@adobe/react-spectrum';
 
 import { update, set, setNotes } from '../../reducers/data';
 import Leaf from './Leaf';
@@ -331,8 +331,8 @@ const Notes = ({ data: { items }, update, set, setNotes, player }) => {
   return notes ? (
     <Flex direction="row" gap="size-100" height="100%">
       <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
-        <Content margin="size-100">
-          <div onClick={handleClick} UNSAFE_style={{ overflowY: 'scroll' }}>
+        <Content margin="size-200">
+          <div onClick={handleClick}>
             <Slate editor={editor} value={notes} onChange={handleChange}>
               <Editable autoFocus placeholder="Write some markdown…" {...{ decorate, renderLeaf, onKeyDown }} />
             </Slate>

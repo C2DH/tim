@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { atom, useRecoilState } from 'recoil';
 
-import { Flex, View, Content, ActionGroup, Item, ActionButton, Switch as Toggle } from '@adobe/react-spectrum';
+import { Flex, View, ActionButton, Switch as Toggle } from '@adobe/react-spectrum';
 
 const transcriptVisibleState = atom({
   key: 'transcriptVisible',
@@ -16,7 +16,7 @@ const Tabs = () => {
 
   return (
     <View>
-      <Flex direction="row" marginX="size-100" gap="size-100">
+      <Flex direction="row" marginX="size-200" gap="size-100">
         <ActionButton onPress={() => history.push(`/notes/${id}`)}>Notes</ActionButton>
         <ActionButton onPress={() => history.push(`/metadata/${id}`)}>Metadata</ActionButton>
         <Toggle isSelected={transcriptVisible} onChange={setTranscriptVisible}>

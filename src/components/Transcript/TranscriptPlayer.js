@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import timecode from 'smpte-timecode';
 
-import { Flex, View, Content, ActionGroup, Item, ActionButton, Switch as Toggle } from '@adobe/react-spectrum';
+import { Switch as Toggle } from '@adobe/react-spectrum';
 
 import Karaoke from './Karaoke';
 

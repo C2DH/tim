@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { atom, useRecoilValue } from 'recoil';
 
 import { Flex, View } from '@adobe/react-spectrum';
