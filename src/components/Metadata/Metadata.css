@@ -1,5 +1,5 @@
 .segment + .segment {
-  border-top: 1px solid lightgrey;
+  /* border-top: 1px solid lightgrey; */
 }
 
 .segment pre {
@@ -18,6 +18,7 @@
   border: var(--spectrum-alias-border-size-thin, var(--spectrum-global-dimension-static-size-10)) solid;
   border-color: var(--spectrum-alias-border-color, var(--spectrum-global-color-gray-400));
   color: var(--spectrum-alias-text-color, var(--spectrum-global-color-gray-800));
+  resize: none;
 }
 
 .segment textarea:focus {
@@ -32,6 +33,7 @@
   color: rgb(110, 110, 110);
   font-size: 12px;
   position: relative;
+  padding-right: 10px;
 }
 
 .segment label > span {
@@ -39,4 +41,8 @@
   position: absolute;
   top: 0px;
   left: -15px;
+}
+
+.segment:last-child {
+  padding-bottom: 5em;
 }
