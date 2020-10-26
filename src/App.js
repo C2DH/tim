@@ -51,13 +51,13 @@ const App = () => {
                 <CreateNote />
               </Route>
               <Route exact path="/notes/:id">
-                <Flex direction="column" gap="size-100" height="100%" flex>
+                <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
                   <Tabs />
                   <Notes player={player} />
                 </Flex>
               </Route>
               <Route path="/metadata/:id">
-                <Flex direction="column" gap="size-100" height="100%">
+                <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
                   <Tabs />
                   <Metadata />
                 </Flex>
