@@ -7,7 +7,7 @@ import Karaoke from './Karaoke';
 
 import './TranscriptPlayer.css';
 
-const TranscriptPlayer = ({ transcript, player }) => {
+const TranscriptPlayer = ({ transcript, player, convertTimecodes = true }) => {
   const [timecodesVisible, setTimecodesVisible] = useState(false);
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
 
@@ -23,6 +23,8 @@ const TranscriptPlayer = ({ transcript, player }) => {
   );
 
   const handleCopy = useCallback(({ nativeEvent: event }) => {
+    if (!convertTimecodes) return;
+
     const selection = document.getSelection();
     const { anchorNode } = selection;
 

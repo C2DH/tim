@@ -38,9 +38,9 @@ import NewItem from '@spectrum-icons/workflow/NewItem';
 import OpenRecent from '@spectrum-icons/workflow/OpenRecent';
 import SaveFloppy from '@spectrum-icons/workflow/SaveFloppy';
 import Export from '@spectrum-icons/workflow/Export';
-import Settings from '@spectrum-icons/workflow/Settings';
 
 import Timeline from './Timeline';
+import Settings from '../Settings';
 
 import './Transport.css';
 
@@ -64,7 +64,12 @@ const readyState = atom({
   default: false,
 });
 
-const Transport = ({ player, data: { items }, set }) => {
+const playbackRateState = atom({
+  key: 'playbackRateState',
+  default: 1,
+});
+
+const Transport = ({ player, data: { items, skipIncrement }, set }) => {
   const history = useHistory();
   const { id } = useParams();
 
@@ -77,6 +82,7 @@ const Transport = ({ player, data: { items }, set }) => {
   const progress = useRecoilValue(progressState);
   const ready = useRecoilValue(readyState);
   const [playing, setPlaying] = useRecoilState(playState);
+  const [playbackRate, setPlaybackRate] = useRecoilState(playbackRateState);
 
   const disabled = useMemo(() => !ready || !item, [ready, item]);
 
@@ -94,12 +100,24 @@ const Transport = ({ player, data: { items }, set }) => {
 
   const play = useCallback(() => setPlaying(true), [setPlaying]);
   const pause = useCallback(() => setPlaying(false), [setPlaying]);
-  const ffw = useCallback(() => player.current?.seekTo(progress + 1, 'seconds'), [player, progress]);
-  const rwd = useCallback(() => player.current?.seekTo(progress - 1, 'seconds'), [player, progress]);
+  const ffw = useCallback(() => player.current?.seekTo(progress + skipIncrement, 'seconds'), [
+    player,
+    progress,
+    skipIncrement,
+  ]);
+  const rwd = useCallback(() => player.current?.seekTo(progress - skipIncrement, 'seconds'), [
+    player,
+    progress,
+    skipIncrement,
+  ]);
 
   const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
 
   const save = useCallback(() => fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`), [item]);
+
+  const setPlaybackRateAsFloat = useCallback(playbackRateString => setPlaybackRate(parseFloat(playbackRateString)), [
+    setPlaybackRate,
+  ]);
 
   // const openRecent = useCallback(close => close() && history.push(`/notes/${recent}`), [recent, history]);
 
@@ -125,10 +143,17 @@ const Transport = ({ player, data: { items }, set }) => {
         <MenuTrigger>
           <ActionButton aria-label="Playback rate" isQuiet isDisabled={disabled}>
             <Fast />
+            <Text>{playbackRate}×</Text>
           </ActionButton>
-          <Menu>
-            <Item>1×</Item>
-            <Item>2×</Item>
+          <Menu onAction={setPlaybackRateAsFloat}>
+            <Item key={0.25}>0.25×</Item>
+            <Item key={0.5}>0.5×</Item>
+            <Item key={0.75}>0.75×</Item>
+            <Item key={1}>1×</Item>
+            <Item key={1.25}>1.25×</Item>
+            <Item key={1.5}>1.50×</Item>
+            <Item key={1.75}>1.75×</Item>
+            <Item key={2}>2×</Item>
           </Menu>
         </MenuTrigger>
 
@@ -213,18 +238,7 @@ const Transport = ({ player, data: { items }, set }) => {
           )}
         </DialogTrigger>
 
-        <DialogTrigger isDismissable>
-          <ActionButton isQuiet aria-label="Settings">
-            <Settings />
-          </ActionButton>
-          <Dialog>
-            <Heading>Settings</Heading>
-            <Divider />
-            <Content>
-              <Switch defaultSelected>Convert timecode to links</Switch>
-            </Content>
-          </Dialog>
-        </DialogTrigger>
+        <Settings />
       </Flex>
 
       <Timeline {...{ player, item }} />

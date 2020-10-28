@@ -29,7 +29,7 @@ const transcriptState = atom({
   default: false,
 });
 
-const Transcript = ({ data: { items }, player, set }) => {
+const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 
@@ -76,7 +76,7 @@ const Transcript = ({ data: { items }, player, set }) => {
   ]);
 
   return transcript ? (
-    <TranscriptPlayer {...{ transcript, player }} />
+    <TranscriptPlayer {...{ transcript, player, convertTimecodes }} />
   ) : (
     <Well marginX="size-500">
       <IllustratedMessage>

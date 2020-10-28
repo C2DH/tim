@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useMemo, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { atom, useRecoilState } from 'recoil';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
@@ -50,6 +50,11 @@ const readyState = atom({
   default: false,
 });
 
+const playbackRateState = atom({
+  key: 'playbackRateState',
+  default: 1,
+});
+
 const Player = ({ data: { items }, set, update }, ref) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
@@ -59,6 +64,7 @@ const Player = ({ data: { items }, set, update }, ref) => {
   const [, setProgress] = useRecoilState(progressState);
   const [, setReady] = useRecoilState(readyState);
   const [playing, setPlaying] = useRecoilState(playState);
+  const playbackRate = useRecoilValue(playbackRateState);
 
   const [text, setText] = useState('');
   const [type, setType] = useState('video');
@@ -116,7 +122,19 @@ const Player = ({ data: { items }, set, update }, ref) => {
             <ReactPlayer
               controls
               progressInterval={75}
-              {...{ ref, url, config, playing, onPlay, onPause, onDuration, onProgress, onReady, onError }}
+              {...{
+                ref,
+                url,
+                config,
+                playing,
+                onPlay,
+                onPause,
+                onDuration,
+                onProgress,
+                onReady,
+                onError,
+                playbackRate,
+              }}
             />
             <span className="drag-handle"></span>
             <ActionButton aria-label="Close player" isQuiet onPress={reset}>
