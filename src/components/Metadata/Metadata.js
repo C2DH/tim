@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Flex, View, Content, TextField, TextArea, ActionButton } from '@adobe/react-spectrum';
+import { Flex, View, Content, TextField } from '@adobe/react-spectrum';
 import TreeCollapse from '@spectrum-icons/workflow/TreeCollapse';
 import TreeExpand from '@spectrum-icons/workflow/TreeExpand';
 
@@ -54,8 +54,6 @@ const Metadata = ({ data, setMetadata }) => {
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 
   const { metadata = [] } = item ?? {};
-
-  console.log({ metadata });
 
   return (
     <Flex direction="row" gap="size-100" height="100%">

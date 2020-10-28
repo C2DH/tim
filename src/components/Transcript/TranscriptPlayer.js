@@ -22,23 +22,26 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true }) => {
     [seekTo]
   );
 
-  const handleCopy = useCallback(({ nativeEvent: event }) => {
-    if (!convertTimecodes) return;
+  const handleCopy = useCallback(
+    ({ nativeEvent: event }) => {
+      if (!convertTimecodes) return;
 
-    const selection = document.getSelection();
-    const { anchorNode } = selection;
+      const selection = document.getSelection();
+      const { anchorNode } = selection;
 
-    const node = anchorNode.nodeType === document.TEXT_NODE ? anchorNode.parentNode : anchorNode;
-    const start = node.getAttribute('data-start');
+      const node = anchorNode.nodeType === document.TEXT_NODE ? anchorNode.parentNode : anchorNode;
+      const start = node.getAttribute('data-start');
 
-    if (!!start) {
-      const tc = timecode(start * 1e3, 1e3);
-      const [hh, mm, ss] = tc.toString().split(':');
+      if (!!start) {
+        const tc = timecode(start * 1e3, 1e3);
+        const [hh, mm, ss] = tc.toString().split(':');
 
-      event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
-      event.preventDefault();
-    }
-  }, []);
+        event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
+        event.preventDefault();
+      }
+    },
+    [convertTimecodes]
+  );
 
   return (
     <div>

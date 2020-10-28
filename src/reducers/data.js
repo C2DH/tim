@@ -147,7 +147,7 @@ const notes2metadata = notes => {
       };
     });
 
-  console.log({ segments });
+  // console.log({ segments });
 
   return segments;
 };

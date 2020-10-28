@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import fileDownload from 'js-file-download';
 import sanitize from 'sanitize-filename';
+import timecode from 'smpte-timecode';
 
 import { update, set } from '../reducers/data';
 
@@ -32,16 +33,65 @@ import Export from '@spectrum-icons/workflow/Export';
 import Timeline from './Player/Timeline';
 import Settings from './Settings';
 
+const time2vtt = time => {
+  const tc = new timecode(time, 1e3);
+  const [hh, mm, ss, mmm] = tc.toString().split(':');
+
+  return `${hh}:${mm}:${ss}.${mmm}`;
+};
+
 const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
   const history = useHistory();
   const { id } = useParams();
 
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+  console.log({ item });
   const { title = '' } = item ?? {};
 
   const [recent, setRecent] = useState(null);
+  const [format, setFormat] = useState('');
 
   const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
+
+  const exportItem = useCallback(() => {
+    switch (format) {
+      case 'json':
+        fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`);
+        break;
+
+      case 'md':
+        fileDownload(
+          item.notes.map(({ children }) => children.map(({ text }, index) => text).join('\n')).join('\n'),
+          `${sanitize(item.title)}.txt`
+        );
+        break;
+
+      // case 'ohms':
+      //   fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.xml`);
+      //   break;
+
+      case 'vtt':
+        const segments = item.metadata.map(({ time: start, title, synopsis: text }, index, array) => ({
+          start,
+          end: index < array.length - 1 ? array[index + 1].time : start + 3600,
+          title,
+          text,
+        }));
+        const vtt = [
+          'WEBVTT',
+          ...segments.map(({ title, start, end, text }) =>
+            [title, `${time2vtt(start)} --> ${time2vtt(end)}`, text].join('\n')
+          ),
+        ];
+
+        fileDownload(vtt.join('\n\n'), `${sanitize(item.title)}.vtt`);
+        break;
+
+      default:
+        console.warn('format not handled', format);
+    }
+  }, [format, item]);
+
   const save = useCallback(() => fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`), [item]);
 
   return (
@@ -104,7 +154,7 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
               <Heading>Export</Heading>
               <Divider />
               <Content>
-                <Picker label="Choose format">
+                <Picker label="Choose format" onSelectionChange={setFormat} selectedKey={format}>
                   <Item key="md">Text (Markdown)</Item>
                   <Item key="csv">CSV</Item>
                   <Item key="ohms">XML (OHMS)</Item>
@@ -116,7 +166,7 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
                 <Button variant="secondary" onPress={close}>
                   Cancel
                 </Button>
-                <Button variant="cta" onPress={close}>
+                <Button variant="cta" onPress={exportItem}>
                   Export
                 </Button>
               </ButtonGroup>

@@ -49,6 +49,11 @@ div[data-slate-editor] {
   padding-left: 10px;
 }
 
+/* .leaf.blockquote + .leaf::first-line {
+  border-left: none !important;
+  color: red;
+} */
+
 .leaf.code {
   font-family: monospace;
   background-color: #eee;
