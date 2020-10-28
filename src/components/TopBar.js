@@ -10,6 +10,7 @@ import ObjectToCSV from 'object-to-csv';
 import { update, set } from '../reducers/data';
 
 import Transport from './Player/Transport';
+import exportItem from './exportItem';
 
 import {
   Flex,
@@ -34,19 +35,11 @@ import Export from '@spectrum-icons/workflow/Export';
 import Timeline from './Player/Timeline';
 import Settings from './Settings';
 
-const time2vtt = time => {
-  const tc = new timecode(time, 1e3);
-  const [hh, mm, ss, mmm] = tc.toString().split(':');
-
-  return `${hh}:${mm}:${ss}.${mmm}`;
-};
-
 const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
   const history = useHistory();
   const { id } = useParams();
 
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
-  console.log({ item });
   const { title = '' } = item ?? {};
 
   const [recent, setRecent] = useState(null);
@@ -54,71 +47,8 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
 
   const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
 
-  const exportItem = useCallback(() => {
-    switch (format) {
-      case 'json':
-        fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`);
-        break;
-
-      case 'md':
-        fileDownload(
-          item.notes.map(({ children }) => children.map(({ text }, index) => text).join('\n')).join('\n'),
-          `${sanitize(item.title)}.txt`
-        );
-        break;
-
-      // case 'ohms':
-      //   fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.xml`);
-      //   break;
-
-      case 'vtt':
-        const segments = item.metadata.map(({ time: start, title, synopsis: text }, index, array) => ({
-          start,
-          end: index < array.length - 1 ? array[index + 1].time : start + 3600,
-          title,
-          text,
-        }));
-        const vtt = [
-          'WEBVTT',
-          ...segments.map(({ title, start, end, text }) =>
-            [title, `${time2vtt(start)} --> ${time2vtt(end)}`, text].join('\n')
-          ),
-        ];
-
-        fileDownload(vtt.join('\n\n'), `${sanitize(item.title)}.vtt`);
-        break;
-
-      case 'csv':
-        const data = item.metadata.map(({ timecode, time, title, synopsis, keywords, notes }) => ({
-          timecode,
-          time,
-          title,
-          synopsis,
-          keywords,
-          notes,
-        }));
-
-        const otc = new ObjectToCSV({
-          keys: [
-            { key: 'timecode', as: 'Timecode' },
-            { key: 'time', as: 'Time' },
-            { key: 'title', as: 'Title' },
-            { key: 'keywords', as: 'Keywords' },
-            { key: 'synopsis', as: 'Synopsis' },
-            { key: 'notes', as: 'Notes' },
-          ],
-          data,
-        });
-
-        fileDownload(otc.getCSV(), `${sanitize(item.title)}.csv`);
-        break;
-
-      default:
-        console.warn('format not handled', format);
-    }
-  }, [format, item]);
-
-  const save = useCallback(() => fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`), [item]);
+  const handleExport = useCallback(() => exportItem(item, format), [format, item]);
+  const save = useCallback(() => exportItem(item, 'json'), [item]);
 
   return (
     <>
@@ -192,7 +122,7 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
                 <Button variant="secondary" onPress={close}>
                   Cancel
                 </Button>
-                <Button variant="cta" onPress={exportItem}>
+                <Button variant="cta" onPress={handleExport}>
                   Export
                 </Button>
               </ButtonGroup>
