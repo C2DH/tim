@@ -52,13 +52,13 @@ const App = () => {
               </Route>
               <Route exact path="/notes/:id">
                 <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
-                  <Tabs />
+                  <Tabs selected="notes" />
                   <Notes player={player} />
                 </Flex>
               </Route>
               <Route path="/metadata/:id">
                 <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
-                  <Tabs />
+                  <Tabs selected="metadata" />
                   <Metadata />
                 </Flex>
               </Route>

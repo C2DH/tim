@@ -55,13 +55,17 @@ const Metadata = ({ data, setMetadata }) => {
 
   const { metadata = [] } = item ?? {};
 
+  console.log({ metadata });
+
   return (
     <Flex direction="row" gap="size-100" height="100%">
       <View gap="size-100" flex UNSAFE_style={{ overflowY: 'scroll' }}>
         <Content margin="size-200">
-          {metadata.map((segment, index) => (
-            <Segment key={`${index}-${segment.time}`} {...segment} setMetadata={setMetadata} id={id} />
-          ))}
+          {[...metadata]
+            .sort(({ time: a }, { time: b }) => a - b)
+            .map((segment, index) => (
+              <Segment key={`${index}-${segment.time}`} {...segment} setMetadata={setMetadata} id={id} />
+            ))}
         </Content>
       </View>
     </Flex>

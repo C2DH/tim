@@ -33,7 +33,7 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true }) => {
 
     if (!!start) {
       const tc = timecode(start * 1e3, 1e3);
-      const [hh, mm, ss, mmm] = tc.toString().split(':');
+      const [hh, mm, ss] = tc.toString().split(':');
 
       event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
       event.preventDefault();
@@ -50,7 +50,7 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true }) => {
         {transcript.map(({ id, start, end, items }) => {
           let tc = '';
           if (!!start) {
-            const [hh, mm, ss, mmm] = timecode(start * 1e3, 1e3)
+            const [hh, mm, ss] = timecode(start * 1e3, 1e3)
               .toString()
               .split(':');
             tc = `${hh}:${mm}:${ss}`;

@@ -1,11 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useCallback, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import timecode from 'smpte-timecode';
-import fileDownload from 'js-file-download';
-import sanitize from 'sanitize-filename';
 
 import { update, set } from '../../reducers/data';
 
@@ -44,7 +42,6 @@ const playbackRateState = atom({
 
 const Transport = ({ player, data: { items, skipIncrement }, set }) => {
   const { id } = useParams();
-
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 
   const duration = useRecoilValue(durationState);

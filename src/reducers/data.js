@@ -154,6 +154,7 @@ const notes2metadata = notes => {
 
 const metadata2notes = metadata =>
   metadata
+    .sort(({ time: a }, { time: b }) => a - b)
     .map(({ timecode, title, synopsis, notes, keywords }) => {
       const lines = [
         `[${timecode}]`,
