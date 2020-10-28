@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import fileDownload from 'js-file-download';
 import sanitize from 'sanitize-filename';
 import timecode from 'smpte-timecode';
+import ObjectToCSV from 'object-to-csv';
 
 import { update, set } from '../reducers/data';
 
@@ -85,6 +86,31 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
         ];
 
         fileDownload(vtt.join('\n\n'), `${sanitize(item.title)}.vtt`);
+        break;
+
+      case 'csv':
+        const data = item.metadata.map(({ timecode, time, title, synopsis, keywords, notes }) => ({
+          timecode,
+          time,
+          title,
+          synopsis,
+          keywords,
+          notes,
+        }));
+
+        const otc = new ObjectToCSV({
+          keys: [
+            { key: 'timecode', as: 'Timecode' },
+            { key: 'time', as: 'Time' },
+            { key: 'title', as: 'Title' },
+            { key: 'keywords', as: 'Keywords' },
+            { key: 'synopsis', as: 'Synopsis' },
+            { key: 'notes', as: 'Notes' },
+          ],
+          data,
+        });
+
+        fileDownload(otc.getCSV(), `${sanitize(item.title)}.csv`);
         break;
 
       default:

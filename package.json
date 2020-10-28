@@ -13,6 +13,7 @@
     "is-hotkey": "^0.1.6",
     "js-file-download": "^0.4.12",
     "mammoth": "^1.4.13",
+    "object-to-csv": "^1.0.5",
     "prismjs": "^1.22.0",
     "react": "^16.13.1",
     "react-autosize-textarea": "^7.1.0",
