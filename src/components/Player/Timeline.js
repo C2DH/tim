@@ -6,6 +6,8 @@ import { update, set } from '../../reducers/data';
 
 import { Flex } from '@adobe/react-spectrum';
 
+import './Timeline.css';
+
 const durationState = atom({
   key: 'durationState',
   default: 0,

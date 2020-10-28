@@ -4,7 +4,7 @@ import { atom, useRecoilValue } from 'recoil';
 
 import { Flex, View } from '@adobe/react-spectrum';
 
-import Transport from './components/Player/Transport';
+import TopBar from './components/TopBar';
 import Tabs from './components/Tabs';
 import Notes from './components/Notes/Notes';
 import CreateNote from './components/Notes/CreateNote';
@@ -33,7 +33,7 @@ const App = () => {
         </Route>
         <Route path={['/new', '/notes/:id', '/metadata/:id']}>
           <View height="size-800">
-            <Transport player={player} />
+            <TopBar player={player} />
           </View>
 
           <Flex direction="row" gap="size-100" flex UNSAFE_style={{ overflow: 'hidden' }}>
