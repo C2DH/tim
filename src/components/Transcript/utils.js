@@ -9,28 +9,34 @@ export const parse = (data, format) => {
     case 'google':
       return new Promise((resolve, reject) => {
         try {
-          const { results } = JSON.parse(data);
+          const json = JSON.parse(data);
+          const results = json.results ? json.results : json.response.results;
 
           resolve(
             results
               .map(({ alternatives: [{ transcript: text, words }] }, segmentIndex) => ({
                 text,
                 id: `s${segmentIndex}`,
-                items: words.map(
-                  (
-                    {
-                      word: text,
-                      startTime: { seconds: startSeconds, nanos: startNanos = 0 },
-                      endTime: { seconds: endSeconds, nanos: endNanos = 0 },
-                    },
-                    index
-                  ) => ({
+                items: words.map(({ word: text, startTime, endTime }, index) => {
+                  let start, end;
+
+                  if (typeof startTime === 'object') {
+                    const { seconds: startSeconds, nanos: startNanos = 0 } = startTime;
+                    const { seconds: endSeconds, nanos: endNanos = 0 } = endTime;
+                    start = parseInt(startSeconds, 10) + startNanos / 1e9;
+                    end = parseInt(endSeconds) + endNanos / 1e9;
+                  } else {
+                    start = parseFloat(startTime);
+                    end = parseFloat(endTime);
+                  }
+
+                  return {
                     text,
                     id: `i${segmentIndex}-${index}`,
-                    start: parseInt(startSeconds, 10) + startNanos / 1e9,
-                    end: parseInt(endSeconds) + endNanos / 1e9,
-                  })
-                ),
+                    start,
+                    end,
+                  };
+                }),
               }))
               .map(({ text, items, id }) => ({
                 text,
