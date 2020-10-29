@@ -90,7 +90,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
             </ActionButton>
             <input
               type="file"
-              accept="text/*, application/json, *.json, text/vtt, *.vtt, text/srt, *.srt, text/plain, *.txt"
+              accept="text/*, application/json, *.json, text/vtt, *.vtt, *.webvtt, text/srt, *.srt, text/plain, *.txt"
               onChange={loadFile}
               ref={fileInput}
               aria-label="Choose transcript file"
