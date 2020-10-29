@@ -27,12 +27,16 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true }) => {
       if (!convertTimecodes) return;
 
       const selection = document.getSelection();
-      const { anchorNode } = selection;
+      const { anchorNode, focusNode } = selection;
 
-      const node = anchorNode.nodeType === document.TEXT_NODE ? anchorNode.parentNode : anchorNode;
-      const start = node.getAttribute('data-start');
+      const aNode = anchorNode.nodeType === document.TEXT_NODE ? anchorNode.parentNode : anchorNode;
+      const fNode = focusNode.nodeType === document.TEXT_NODE ? focusNode.parentNode : focusNode;
+      const start = Math.min(
+        parseFloat(aNode.getAttribute('data-start')),
+        parseFloat(fNode.getAttribute('data-start'))
+      );
 
-      if (!!start) {
+      if (!isNaN(start)) {
         const tc = timecode(start * 1e3, 1e3);
         const [hh, mm, ss] = tc.toString().split(':');
 
