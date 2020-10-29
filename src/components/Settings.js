@@ -16,8 +16,12 @@ import {
 
 import SettingsIcon from '@spectrum-icons/workflow/Settings';
 
-const Settings = ({ data: { convertTimecodes = true, skipIncrement = 1, timecodeInterval = 1 }, update }) => {
+const Settings = ({
+  data: { convertTimecodes = true, skipIncrement = 1, timecodeInterval = 1, partialTranscript = true },
+  update,
+}) => {
   const setConvertTimecodes = useCallback(convertTimecodes => update({ convertTimecodes }), [update]);
+  const setPartialTranscript = useCallback(partialTranscript => update({ partialTranscript }), [update]);
   const setSkipIncrement = useCallback(skipIncrement => update({ skipIncrement }), [update]);
   const setTimecodeInterval = useCallback(timecodeInterval => update({ timecodeInterval }), [update]);
 
@@ -32,6 +36,9 @@ const Settings = ({ data: { convertTimecodes = true, skipIncrement = 1, timecode
         <Content>
           <Checkbox isSelected={convertTimecodes} onChange={setConvertTimecodes}>
             Convert timecodes to markers
+          </Checkbox>
+          <Checkbox isSelected={partialTranscript} onChange={setPartialTranscript}>
+            Export Notes as Partial Transcript in OHMS XML
           </Checkbox>
           <TextField
             inputMode="numeric"

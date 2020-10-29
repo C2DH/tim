@@ -11,7 +11,7 @@ const time2vtt = time => {
   return `${hh}:${mm}:${ss}.${mmm}`;
 };
 
-const exportItem = (item, format) => {
+const exportItem = (item, format, partialTranscript) => {
   switch (format) {
     case 'json':
       fileDownload(JSON.stringify(item, null, 2), `${sanitize(item.title)}.json`);
@@ -77,12 +77,14 @@ const exportItem = (item, format) => {
         pointEl.appendChild(synopsisEl);
         synopsisEl.textContent = synopsis;
 
-        const partialTranscriptEl = doc.createElementNS(
-          'https://www.weareavp.com/nunncenter/ohms',
-          'partial_transcript'
-        );
-        pointEl.appendChild(partialTranscriptEl);
-        partialTranscriptEl.textContent = notes;
+        if (partialTranscript) {
+          const partialTranscriptEl = doc.createElementNS(
+            'https://www.weareavp.com/nunncenter/ohms',
+            'partial_transcript'
+          );
+          pointEl.appendChild(partialTranscriptEl);
+          partialTranscriptEl.textContent = notes;
+        }
 
         const keywordsEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'keywords');
         pointEl.appendChild(keywordsEl);

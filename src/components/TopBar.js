@@ -2,11 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import fileDownload from 'js-file-download';
-import sanitize from 'sanitize-filename';
-import timecode from 'smpte-timecode';
-import ObjectToCSV from 'object-to-csv';
-
 import { update, set } from '../reducers/data';
 
 import Transport from './Player/Transport';
@@ -35,7 +30,7 @@ import Export from '@spectrum-icons/workflow/Export';
 import Timeline from './Player/Timeline';
 import Settings from './Settings';
 
-const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
+const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true }, set }) => {
   const history = useHistory();
   const { id } = useParams();
 
@@ -47,7 +42,11 @@ const TopBar = ({ player, data: { items, skipIncrement }, set }) => {
 
   const setTitle = useCallback(title => set([id, 'title', title]), [id, set]);
 
-  const handleExport = useCallback(() => exportItem(item, format), [format, item]);
+  const handleExport = useCallback(() => exportItem(item, format, partialTranscript), [
+    format,
+    item,
+    partialTranscript,
+  ]);
   const save = useCallback(() => exportItem(item, 'json'), [item]);
 
   return (
