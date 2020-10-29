@@ -59,7 +59,7 @@ const App = () => {
               <Route path="/metadata/:id">
                 <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
                   <Tabs selected="metadata" />
-                  <Metadata />
+                  <Metadata player={player} />
                 </Flex>
               </Route>
               <Route path="*">

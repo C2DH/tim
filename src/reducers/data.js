@@ -2,34 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import timecode from 'smpte-timecode';
 
 const initialState = {
-  items: [
-    {
-      id: 'test',
-      title: 'TEST',
-      url: null,
-      notes: [
-        {
-          children: [{ text: '[00:00:00]' }],
-        },
-      ],
-      metadata: [],
-      created: Date.now(),
-      updated: Date.now(),
-    },
-    {
-      id: 'test2',
-      title: 'TEST test',
-      url: null,
-      notes: [
-        {
-          children: [{ text: '[00:00:00]' }],
-        },
-      ],
-      metadata: [],
-      created: Date.now(),
-      updated: Date.now(),
-    },
-  ],
+  items: [],
 };
 
 const string2tc = text => {

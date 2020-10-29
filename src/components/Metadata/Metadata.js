@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import timecode from 'smpte-timecode';
 
 import { Flex, View, Content, TextField } from '@adobe/react-spectrum';
 import TreeCollapse from '@spectrum-icons/workflow/TreeCollapse';
@@ -12,7 +13,20 @@ import { setMetadata } from '../../reducers/data';
 
 import './Metadata.css';
 
-const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, setMetadata }) => {
+const string2time = text => {
+  let [ss, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
+  if (hh.length === 1) hh = `0${hh}`;
+  if (mm.length === 1) mm = `0${mm}`;
+
+  let tc = null;
+  try {
+    tc = timecode(`${hh}:${mm}:${ss}:00`, 1e3);
+  } catch (ignored) {}
+
+  return tc.frameCount / 1e3;
+};
+
+const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, setMetadata, player }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const setTitle = useCallback(title => setMetadata([id, index, 'title', title]), [id, index, setMetadata]);
@@ -21,12 +35,42 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
     index,
     setMetadata,
   ]);
+
   const setNotes = useCallback(({ currentTarget: { value } }) => setMetadata([id, index, 'notes', value]), [
     id,
     index,
     setMetadata,
   ]);
+
   const setKeywords = useCallback(keywords => setMetadata([id, index, 'keywords', keywords]), [id, index, setMetadata]);
+
+  const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
+
+  const seekTimecode = useCallback(
+    ({ nativeEvent: { target } }) => {
+      const a = target.value.substring(0, target.selectionStart).split(' ').pop();
+      const b = target.value.substring(target.selectionStart).split(' ').reverse().pop();
+
+      const word = `${a}${b}`;
+
+      const time = [
+        ...word.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...word.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...word.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...word.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...word.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...word.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...word.matchAll(new RegExp(/(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/g)),
+        ...word.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d)\]/g)),
+      ]
+        .map(([text]) => string2time(text))
+        .reverse()
+        .pop();
+
+      time && seekTo(time);
+    },
+    [seekTo]
+  );
 
   return (
     <div className="segment" data-time={time} data-timecode={timecode}>
@@ -34,21 +78,21 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
       <TextField label="Title" value={title} width="100%" onChange={setTitle} />
       <label>
         Synopsis
-        <TextareaAutosize value={synopsis} onChange={setSynopsis} />
+        <TextareaAutosize value={synopsis} onChange={setSynopsis} onClick={seekTimecode} />
       </label>
       <label>
         <span onClick={() => setCollapsed(!collapsed)}>
           {collapsed ? <TreeExpand size="XS" /> : <TreeCollapse size="XS" />}
         </span>
         Notes
-        {collapsed ? null : <TextareaAutosize value={notes} onChange={setNotes} />}
+        {collapsed ? null : <TextareaAutosize value={notes} onChange={setNotes} onClick={seekTimecode} />}
       </label>
       <TextField label="Keywords" value={keywords} width="100%" onChange={setKeywords} />
     </div>
   );
 };
 
-const Metadata = ({ data, setMetadata }) => {
+const Metadata = ({ data, setMetadata, player }) => {
   const { items } = data;
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
@@ -62,7 +106,13 @@ const Metadata = ({ data, setMetadata }) => {
           {[...metadata]
             .sort(({ time: a }, { time: b }) => a - b)
             .map((segment, index) => (
-              <Segment key={`${index}-${segment.time}`} {...segment} setMetadata={setMetadata} id={id} />
+              <Segment
+                key={`${index}-${segment.time}`}
+                {...segment}
+                setMetadata={setMetadata}
+                id={id}
+                player={player}
+              />
             ))}
         </Content>
       </View>
