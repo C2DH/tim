@@ -34,7 +34,7 @@ const Tabs = ({ data: { items }, selected }) => {
           onSelectionChange={selection => history.push(`/${[...selection].pop()}/${id}`)}
         >
           <Item key="notes">Notes</Item>
-          <Item key="metadata">Metadata</Item>
+          <Item key="metadata">Preview</Item>
         </ActionGroup>
         <Toggle isSelected={transcriptVisible} onChange={setTranscriptVisible}>
           Transcript
