@@ -1,5 +1,7 @@
 .segment + .segment {
-  /* border-top: 1px solid lightgrey; */
+  border-top: 1px solid lightgrey;
+  margin-top: 2em;
+  padding-top: 1em;
 }
 
 .segment pre {
@@ -45,4 +47,8 @@
 
 .segment:last-child {
   padding-bottom: 5em;
+}
+
+.segment h3 {
+  cursor: pointer;
 }

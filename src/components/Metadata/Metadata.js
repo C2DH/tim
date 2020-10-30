@@ -26,6 +26,21 @@ const string2time = text => {
   return tc.frameCount / 1e3;
 };
 
+const matchTimecode = text =>
+  [
+    ...text.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+    ...text.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+    ...text.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
+    ...text.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\](?=\s+)/g)),
+    ...text.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
+    ...text.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
+    ...text.matchAll(new RegExp(/(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/g)),
+    ...text.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d)\]/g)),
+  ]
+    .map(([text]) => string2time(text))
+    .reverse()
+    .pop();
+
 const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, setMetadata, player }) => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -50,22 +65,7 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
     ({ nativeEvent: { target } }) => {
       const a = target.value.substring(0, target.selectionStart).split(' ').pop();
       const b = target.value.substring(target.selectionStart).split(' ').reverse().pop();
-
-      const word = `${a}${b}`;
-
-      const time = [
-        ...word.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
-        ...word.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
-        ...word.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
-        ...word.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\](?=\s+)/g)),
-        ...word.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
-        ...word.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
-        ...word.matchAll(new RegExp(/(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/g)),
-        ...word.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d)\]/g)),
-      ]
-        .map(([text]) => string2time(text))
-        .reverse()
-        .pop();
+      const time = matchTimecode(`${a}${b}`);
 
       time && seekTo(time);
     },
@@ -74,7 +74,7 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
 
   return (
     <div className="segment" data-time={time} data-timecode={timecode}>
-      <h4>{timecode}</h4>
+      <h3 onClick={() => seekTo(time)}>{timecode}</h3>
       <TextField label="Title" value={title} width="100%" onChange={setTitle} />
       <label>
         Synopsis

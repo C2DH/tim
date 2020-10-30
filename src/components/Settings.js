@@ -35,7 +35,7 @@ const Settings = ({
         <Divider />
         <Content>
           <Checkbox isSelected={convertTimecodes} onChange={setConvertTimecodes}>
-            Convert timecodes to markers
+            Add timecode when copying transcript to Notes
           </Checkbox>
           <Checkbox isSelected={partialTranscript} onChange={setPartialTranscript}>
             Export Notes as Partial Transcript in OHMS XML
