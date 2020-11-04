@@ -86,6 +86,11 @@ const exportItem = (item, format, partialTranscript) => {
           partialTranscriptEl.textContent = notes;
         }
 
+        if (item.url.toLowerCase().indexOf('youtube.com') !== -1) {
+          const hostEl = doc.getElementsByTagName('host')[0];
+          hostEl.textContent = 'YouTube';
+        }
+
         const keywordsEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'keywords');
         pointEl.appendChild(keywordsEl);
         keywordsEl.textContent = keywords.split(',').join(';');
