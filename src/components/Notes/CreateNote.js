@@ -65,7 +65,7 @@ const CreateNote = ({ data: { items = [] }, add }) => {
       },
     }) => {
       if (files.length === 0) return;
-      console.log(files[0]);
+      // console.log(files[0]);
 
       setFile(files[0]);
     },
@@ -134,7 +134,7 @@ const CreateNote = ({ data: { items = [] }, add }) => {
             </Section>
           </Picker>
           <ActionButton isDisabled={!format || !isValid} onPress={createNote}>
-            Load
+            Load {file?.name}
           </ActionButton>
         </Flex>
       </Content>

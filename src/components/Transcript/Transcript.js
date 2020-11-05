@@ -30,6 +30,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const {transcript} = item;
 
+  const [file, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
@@ -58,8 +59,9 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
       if (files.length === 0) return;
 
       setText(await (await fetch(window.URL.createObjectURL(files[0]))).text());
+      setFile(files[0]);
     },
-    [setText]
+    [setText, setFile]
   );
 
   const fileInput = useRef(null);
@@ -116,7 +118,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
               </Section>
             </Picker>
             <ActionButton isDisabled={!format || !isValid} onPress={loadTranscript}>
-              Load
+              Load {file?.name}
             </ActionButton>
           </Flex>
         </Content>
