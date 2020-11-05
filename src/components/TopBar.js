@@ -65,7 +65,7 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
           <ActionButton isQuiet aria-label="New" onPress={() => history.push('/')}>
             <NewItem />
           </ActionButton>
-          <Tooltip>New project</Tooltip>
+          <Tooltip>Create or import project</Tooltip>
         </TooltipTrigger>
 
         <TooltipTrigger delay={0} isDisabled={openIsVisible}>
@@ -111,7 +111,7 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
           <ActionButton isQuiet aria-label="Save" isDisabled={!item} onPress={save}>
             <SaveFloppy />
           </ActionButton>
-          <Tooltip>Save JSON</Tooltip>
+          <Tooltip>Save project as JSON</Tooltip>
         </TooltipTrigger>
 
         <TooltipTrigger delay={0} isDisabled={exportIsVisible}>
@@ -129,7 +129,6 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
                     <Item key="csv">CSV</Item>
                     <Item key="ohms">XML (OHMS)</Item>
                     <Item key="vtt">VTT</Item>
-                    <Item key="json">JSON</Item>
                   </Picker>
                 </Content>
                 <ButtonGroup>

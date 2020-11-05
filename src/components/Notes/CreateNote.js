@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Heading, Content, ActionButton, Text, Flex, Picker, Item } from '@adobe/react-spectrum';
+import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section } from '@adobe/react-spectrum';
 
 import { add } from '../../reducers/data';
 import { parse } from './utils';
@@ -115,8 +115,8 @@ const CreateNote = ({ data: { items = [] }, add }) => {
           <Heading>Create note</Heading>
           <Text>Start with</Text>
           <ActionButton onPress={createEmptyNote}>empty note</ActionButton>
-          <Text>or import text from</Text>
-          <ActionButton onPress={triggerFileInput}>document file</ActionButton>
+          <Text>or import from document file or previously saved project JSON</Text>
+          <ActionButton onPress={triggerFileInput}>Choose File</ActionButton>
           <input
             type="file"
             accept="text/plain, *.txt, *.md, text/rtf, application/rtf, *.rtf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, *.docx, application/json, *.json"
@@ -126,15 +126,19 @@ const CreateNote = ({ data: { items = [] }, add }) => {
           />
 
           <Picker
-            label="Choose document format"
+            label="Choose file format"
             selectedKey={format}
             onSelectionChange={setFormat}
             validationState={format === '' || isValid ? 'valid' : 'invalid'}
           >
+            <Section title="Document">
             <Item key="text">plain text</Item>
             <Item key="rtf">Rich Text Format</Item>
             <Item key="docx">Word</Item>
-            <Item key="json">JSON</Item>
+            </Section>
+            <Section title="Project">
+              <Item key="json">JSON</Item>
+            </Section>
           </Picker>
           <ActionButton isDisabled={!format || !isValid} onPress={createNote}>
             Load
