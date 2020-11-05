@@ -3,7 +3,7 @@ import { atom, useRecoilState, useRecoilValue } from 'recoil';
 // import { useEditor } from 'slate-react';
 // import { Editor, Node, Text, Range, createEditor } from 'slate';
 
-import { ActionGroup, Item } from '@adobe/react-spectrum';
+import { ActionGroup, Item, TooltipTrigger, Tooltip } from '@adobe/react-spectrum';
 
 // import Comment from '@spectrum-icons/workflow/Comment';
 import Clock from '@spectrum-icons/workflow/Clock';
@@ -56,18 +56,30 @@ const Toolbar = () => {
 
   return (
     <ActionGroup orientation="vertical" selectionMode="multiple" selectedKeys={selected} onAction={setAction}>
-      <Item key="timecode" aria-label="Timecode">
-        <Clock />
-      </Item>
-      <Item key="title" aria-label="Title">
-        <TextParagraph />
-      </Item>
-      <Item key="keyword" aria-label="Keyword">
-        <ViewList />
-      </Item>
-      <Item key="synopsis" aria-label="Synopsis">
-        <FileTxt />
-      </Item>
+      <TooltipTrigger delay={0} placement="left">
+        <Item key="timecode" aria-label="Timecode">
+          <Clock />
+        </Item>
+        <Tooltip>Timecode</Tooltip>
+      </TooltipTrigger>
+      <TooltipTrigger delay={0} placement="left">
+        <Item key="title" aria-label="Title">
+          <TextParagraph />
+        </Item>
+        <Tooltip>Title</Tooltip>
+      </TooltipTrigger>
+      <TooltipTrigger delay={0} placement="left">
+        <Item key="keyword" aria-label="Keyword">
+          <ViewList />
+        </Item>
+        <Tooltip>Keyword</Tooltip>
+      </TooltipTrigger>
+      <TooltipTrigger delay={0} placement="left">
+        <Item key="synopsis" aria-label="Synopsis">
+          <FileTxt />
+        </Item>
+        <Tooltip>Synopsis</Tooltip>
+      </TooltipTrigger>
     </ActionGroup>
   );
 };
