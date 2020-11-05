@@ -72,8 +72,6 @@ const App = () => {
           <Redirect to="/" />
         </Route>
       </Switch>
-
-      <View height="size-400">(footer)</View>
     </Flex>
   );
 };
