@@ -205,7 +205,7 @@ const isSynopsisActive = editor => {
   return !!synopsis;
 };
 
-const Notes = ({ data: { items }, update, set, setNotes, player }) => {
+const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, player }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { notes } = item ?? {};
@@ -283,9 +283,9 @@ const Notes = ({ data: { items }, update, set, setNotes, player }) => {
 
             mark === 'times' &&
               [3, 2, 1]
-                .filter(delta => progress >= delta)
+                .filter(delta => progress >= delta * timecodeInterval)
                 .forEach(delta => {
-                  const tc = timecode((progress - delta) * 1e3, 1e3);
+                  const tc = timecode((progress - delta * timecodeInterval) * 1e3, 1e3);
                   const [hh, mm, ss, mmm] = tc.toString().split(':');
                   tokens.push(`[${hh}:${mm}:${ss}]`);
                 });
