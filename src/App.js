@@ -40,10 +40,10 @@ const App = () => {
             <View width="size-5000">
               <Player ref={player} />
             </View>
-            {transcriptVisible ? (
-              <View width="size-5000" UNSAFE_style={{ overflowY: 'scroll' }}>
+            {transcriptVisible ? (      
+              <Flex direction="column" gap="size-100" height="100%" width="100%" flex>        
                 <Transcript player={player} />
-              </View>
+              </Flex>
             ) : null}
 
             <Switch>

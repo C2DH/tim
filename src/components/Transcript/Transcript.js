@@ -15,6 +15,7 @@ import {
   TextArea,
   Picker,
   Section,
+  View
 } from '@adobe/react-spectrum';
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
@@ -76,54 +77,56 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   return transcript ? (
     <TranscriptPlayer {...{ transcript, player, convertTimecodes }} />
   ) : (
-    <Well marginX="size-500">
-      <IllustratedMessage>
-        <NotFound />
-        <Heading>No Transcript</Heading>
-        <Content>
-          <Flex direction="column" gap="size-50">
-            <Text>Choose</Text>
-            <ActionButton isDisabled={!item} onPress={triggerFileInput}>
-              transcript file
-            </ActionButton>
-            <input
-              type="file"
-              accept="text/*, application/json, *.json, text/vtt, *.vtt, *.webvtt, text/srt, *.srt, text/plain, *.txt"
-              onChange={loadFile}
-              ref={fileInput}
-              aria-label="Choose transcript file"
-            />
+    <View>
+      <Well marginX="size-500">
+        <IllustratedMessage>
+          <NotFound />
+          <Heading>No Transcript</Heading>
+          <Content>
+            <Flex direction="column" gap="size-50">
+              <Text>Choose</Text>
+              <ActionButton isDisabled={!item} onPress={triggerFileInput}>
+                transcript file
+              </ActionButton>
+              <input
+                type="file"
+                accept="text/*, application/json, *.json, text/vtt, *.vtt, *.webvtt, text/srt, *.srt, text/plain, *.txt"
+                onChange={loadFile}
+                ref={fileInput}
+                aria-label="Choose transcript file"
+              />
 
-            <Text>or paste here</Text>
-            <TextArea autoFocus aria-label="transcript content" isDisabled={!item} value={text} onChange={setText} />
-            <Picker
-              isDisabled={!item}
-              label="Choose format"
-              selectedKey={format}
-              onSelectionChange={setFormat}
-              validationState={format === '' || isValid ? 'valid' : 'invalid'}
-            >
-              <Section title="JSON">
-                <Item key="google">Google</Item>
-                <Item key="amazon">Amazon</Item>
-                <Item key="ibm">IBM</Item>
-                <Item key="speechmatics">Speechmatics</Item>
-              </Section>
-              <Section title="Captions">
-                <Item key="srt">SRT</Item>
-                <Item key="vtt">WebVTT</Item>
-              </Section>
-              <Section title="Text">
-                <Item key="text">Plain Text</Item>
-              </Section>
-            </Picker>
-            <ActionButton isDisabled={!format || !isValid} onPress={loadTranscript}>
-              Load {file?.name}
-            </ActionButton>
-          </Flex>
-        </Content>
-      </IllustratedMessage>
-    </Well>
+              <Text>or paste here</Text>
+              <TextArea autoFocus aria-label="transcript content" isDisabled={!item} value={text} onChange={setText} />
+              <Picker
+                isDisabled={!item}
+                label="Choose format"
+                selectedKey={format}
+                onSelectionChange={setFormat}
+                validationState={format === '' || isValid ? 'valid' : 'invalid'}
+              >
+                <Section title="JSON">
+                  <Item key="google">Google</Item>
+                  <Item key="amazon">Amazon</Item>
+                  <Item key="ibm">IBM</Item>
+                  <Item key="speechmatics">Speechmatics</Item>
+                </Section>
+                <Section title="Captions">
+                  <Item key="srt">SRT</Item>
+                  <Item key="vtt">WebVTT</Item>
+                </Section>
+                <Section title="Text">
+                  <Item key="text">Plain Text</Item>
+                </Section>
+              </Picker>
+              <ActionButton isDisabled={!format || !isValid} onPress={loadTranscript}>
+                Load {file?.name}
+              </ActionButton>
+            </Flex>
+          </Content>
+        </IllustratedMessage>
+      </Well>
+    </View>
   );
 };
 
