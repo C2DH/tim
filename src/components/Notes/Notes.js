@@ -75,6 +75,10 @@ import './Notes.css';
         alias: 'timecode',
       },
       {
+        pattern: /\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\](?=\s+)/,
+        alias: 'timecode',
+      },
+      {
         pattern: /\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/,
         alias: 'timecode',
       },
@@ -87,6 +91,10 @@ import './Notes.css';
         alias: 'timecode',
       },
       //
+      {
+        pattern: /(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\]/,
+        alias: 'timecode',
+      },
       {
         pattern: /(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/,
         alias: 'timecode',
@@ -106,6 +114,10 @@ import './Notes.css';
     ],
     // title
     timecoderow: [
+      {
+        pattern: /^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\]$/,
+        alias: 'timecoderow',
+      },
       {
         pattern: /^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]$/,
         alias: 'timecoderow',

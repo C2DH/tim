@@ -6,27 +6,41 @@ const initialState = {
 };
 
 const string2tc = text => {
-  let [ss, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
+  let [s, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
   if (hh.length === 1) hh = `0${hh}`;
   if (mm.length === 1) mm = `0${mm}`;
 
+  let [ss, mmm = '00'] = s.split('.');
+  if (mmm.length > 2) mmm = mmm.substring(0, 2);
+  if (mmm.length === 1) mmm = `${mmm}0`;
+
+  console.log(`${hh}:${mm}:${ss}:${mmm}`);
+
   let tc = null;
   try {
-    tc = timecode(`${hh}:${mm}:${ss}:00`, 1e3);
+    tc = timecode(`${hh}:${mm}:${ss}:${mmm}`, 1e3);
   } catch (ignored) {}
 
+  // console.log(tc.toString());
   return tc;
 };
 
 const tc2time = tc => tc.frameCount / 1e3;
 
-const tc2string = tc => tc.toString().split(':').slice(0, 3).join(':');
+// const tc2string = tc => tc.toString().split(':').slice(0, 3).join(':');
+const tc2string = tc => {
+  const [hh, mm, ss, mmm] = tc.toString().split(':');
+  if (mmm === '00') return `${hh}:${mm}:${ss}`;
+
+  return `${hh}:${mm}:${ss}.${mmm}0`;
+};
 
 const notes2metadata = notes => {
   const lines = notes.map(({ children }) => children.map(({ text }, index) => text).join('\n'));
   const segments = lines
     .reduce((acc, line, index) => {
       let matches = [
+        ...line.matchAll(new RegExp(/^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\]$/g)),
         ...line.matchAll(new RegExp(/^\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]$/g)),
         ...line.matchAll(new RegExp(/^\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]$/g)),
         ...line.matchAll(new RegExp(/^\[(?:[012345]\d):(?:[012345]\d)\]$/g)),
@@ -52,10 +66,12 @@ const notes2metadata = notes => {
       }
 
       matches = [
+        ...line.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\](?=\s+)/g)),
         ...line.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
         ...line.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
         ...line.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
         ...line.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\](?=\s+)/g)),
+        ...line.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\.(?:\d+)\]/g)),
         ...line.matchAll(new RegExp(/(?!^)\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
         ...line.matchAll(new RegExp(/(?!^)\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
         ...line.matchAll(new RegExp(/(?!^)\[(?:[012345]\d):(?:[012345]\d)\]/g)),
@@ -101,7 +117,12 @@ const notes2metadata = notes => {
           : '',
         notes: notes
           ? notes
-              .map(({ line }) => line.replace(/^>|\*\*/g, '').trim())
+              .map(({ line }) =>
+                line
+                  .replace(/^\*\*.*\*\*$/, '')
+                  .replace(/^>|\*\*/g, '')
+                  .trim()
+              )
               .join('\n')
               .replace(/\n\n+/g, '\n\n')
               .trim()
