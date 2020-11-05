@@ -283,9 +283,9 @@ const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, p
 
             mark === 'times' &&
               [3, 2, 1]
-                .filter(delta => progress >= delta * timecodeInterval)
+                .filter(delta => progress >= delta * parseFloat(timecodeInterval))
                 .forEach(delta => {
-                  const tc = timecode((progress - delta * timecodeInterval) * 1e3, 1e3);
+                  const tc = timecode((progress - delta * parseFloat(timecodeInterval)) * 1e3, 1e3);
                   const [hh, mm, ss, mmm] = tc.toString().split(':');
                   tokens.push(`[${hh}:${mm}:${ss}]`);
                 });
