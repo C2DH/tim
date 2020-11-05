@@ -4,6 +4,12 @@ import timecode from 'smpte-timecode';
 import ObjectToCSV from 'object-to-csv';
 import { DOMParser, XMLSerializer } from 'xmldom';
 
+/**
+ * Generates webVTT timestamp
+ *
+ * @param {number} time seconds
+ * @return {string} hh:mm:ss.mmm timecode
+ */
 const time2vtt = time => {
   const tc = new timecode(time, 1e3);
   const [hh, mm, ss, mmm] = tc.toString().split(':');
@@ -11,6 +17,13 @@ const time2vtt = time => {
   return `${hh}:${mm}:${ss}.${mmm}`;
 };
 
+/**
+ * Item export: conversion to specified format and trigger download
+ *
+ * @param {Object} item
+ * @param {string} format
+ * @param {boolean} partialTranscript
+ */
 const exportItem = (item, format, partialTranscript) => {
   switch (format) {
     case 'json':
@@ -97,8 +110,6 @@ const exportItem = (item, format, partialTranscript) => {
 
         indexEl.appendChild(pointEl);
       });
-
-      // console.log(new XMLSerializer().serializeToString(doc));
 
       fileDownload(new XMLSerializer().serializeToString(doc), `${sanitize(item.title)}.xml`);
       break;

@@ -5,6 +5,12 @@ const initialState = {
   items: [],
 };
 
+/**
+ * Parses timecode string (hh:mm:ss.mmm)
+ *
+ * @param {string} text
+ * @return {Object} smpte-timecode
+ */
 const string2tc = text => {
   let [s, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
   if (hh.length === 1) hh = `0${hh}`;
@@ -25,9 +31,20 @@ const string2tc = text => {
   return tc;
 };
 
+/**
+ * Timecode to time (seconds)
+ *
+ * @param {Object} tc smtpe-timecode
+ * @return {number} seconds
+ */
 const tc2time = tc => tc.frameCount / 1e3;
 
-// const tc2string = tc => tc.toString().split(':').slice(0, 3).join(':');
+/**
+ * Timecode to string hh:mm:ss.mmm
+ *
+ * @param {Object} tc smtpe-timecode
+ * @return {string} hh:mm:ss.mmm
+ */
 const tc2string = tc => {
   const [hh, mm, ss, mmm] = tc.toString().split(':');
   if (mmm === '00') return `${hh}:${mm}:${ss}`;
@@ -35,6 +52,12 @@ const tc2string = tc => {
   return `${hh}:${mm}:${ss}.${mmm}0`;
 };
 
+/**
+ * Parses Slate object to metadata
+ *
+ * @param {Object} notes Slate internal state
+ * @return {Object} metadata
+ */
 const notes2metadata = notes => {
   const lines = notes.map(({ children }) => children.map(({ text }, index) => text).join('\n'));
   const segments = lines
@@ -146,6 +169,12 @@ const notes2metadata = notes => {
   return segments;
 };
 
+/**
+ * Converts metadata to Slate state
+ *
+ * @param {Object} metadata
+ * @return {Object} Slate state
+ */
 const metadata2notes = metadata =>
   metadata
     .sort(({ time: a }, { time: b }) => a - b)

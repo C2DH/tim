@@ -4,6 +4,13 @@ import { parseSync as SRTParser } from 'subtitle';
 
 const punctuation = unicode({ General_Category: ['Punctuation'] }).toRegExp();
 
+/**
+ * Parses and converts several transcript formats
+ *
+ * @param {Object} data
+ * @param {string} format
+ * @return {Object} transcript 
+ */
 export const parse = (data, format) => {
   switch (format) {
     case 'google':
