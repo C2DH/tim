@@ -9,10 +9,6 @@ import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section } fro
 import { add } from '../../reducers/data';
 import { parse } from './utils';
 
-const transcriptState = atom({
-  key: 'transcriptState',
-  default: false,
-});
 
 const DEFAULT_NOTE = `[00:00:00]
 # I am a title. To create me, first type "#"
@@ -48,7 +44,6 @@ const CreateNote = ({ data: { items = [] }, add }) => {
   const [file, setFile] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
-  const [, setTranscript] = useRecoilState(transcriptState);
 
   useEffect(() => {
     const validate = async () => {
@@ -81,16 +76,14 @@ const CreateNote = ({ data: { items = [] }, add }) => {
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
 
   const createNote = useCallback(async () => {
-    setTranscript(false);
     const note = await parse(file, format);
     console.log(note);
 
     add(note);
     history.push(`/notes/${note.id}`);
-  }, [file, format, add, history, setTranscript]);
+  }, [file, format, add, history]);
 
   const createEmptyNote = useCallback(() => {
-    setTranscript(false);
     const id = uuidv4();
 
     add({
@@ -106,7 +99,7 @@ const CreateNote = ({ data: { items = [] }, add }) => {
     });
 
     history.push(`/notes/${id}`);
-  }, [add, history, items, setTranscript]);
+  }, [add, history, items]);
 
   return (
     <Flex direction="row" gap="size-100">

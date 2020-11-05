@@ -24,20 +24,17 @@ import { update, set } from '../../reducers/data';
 import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
 
-const transcriptState = atom({
-  key: 'transcriptState',
-  default: false,
-});
 
 const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
+  const {transcript} = item;
 
-  // const [, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
-  const [transcript, setTranscript] = useRecoilState(transcriptState);
+  
+  const setTranscript = useCallback(value => set([id, 'transcript', value]), [set]);
 
   useEffect(() => {
     const validate = async () => {
@@ -60,7 +57,6 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
     }) => {
       if (files.length === 0) return;
 
-      // setFile(files[0]);
       setText(await (await fetch(window.URL.createObjectURL(files[0]))).text());
     },
     [setText]
