@@ -29,7 +29,7 @@ import { parse } from './utils';
 const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
-  const {transcript} = item;
+  const {transcript} = item ?? {};
 
   const [file, setFile] = useState(null);
   const [text, setText] = useState('');
