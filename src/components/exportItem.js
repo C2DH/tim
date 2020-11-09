@@ -4,6 +4,9 @@ import timecode from 'smpte-timecode';
 import ObjectToCSV from 'object-to-csv';
 import { DOMParser, XMLSerializer } from 'xmldom';
 
+// from https://github.com/cookpete/react-player/blob/master/src/patterns.js#L3
+const MATCH_URL_YOUTUBE = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})|youtube\.com\/playlist\?list=|youtube\.com\/user\//;
+
 /**
  * Generates webVTT timestamp
  *
@@ -99,7 +102,7 @@ const exportItem = (item, format, partialTranscript) => {
           partialTranscriptEl.textContent = notes;
         }
 
-        if (item.url.toLowerCase().indexOf('youtube.com') !== -1) {
+        if (MATCH_URL_YOUTUBE.test(item.url)) {
           const hostEl = doc.getElementsByTagName('host')[0];
           hostEl.textContent = 'YouTube';
         }

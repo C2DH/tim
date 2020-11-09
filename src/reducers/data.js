@@ -20,7 +20,7 @@ const string2tc = text => {
   if (mmm.length > 2) mmm = mmm.substring(0, 2);
   if (mmm.length === 1) mmm = `${mmm}0`;
 
-  console.log(`${hh}:${mm}:${ss}:${mmm}`);
+  // console.log(`${hh}:${mm}:${ss}:${mmm}`);
 
   let tc = null;
   try {
