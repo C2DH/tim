@@ -13,7 +13,7 @@ import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-process.env.NEXT_PUBLIC_SENTRY_DSN && Sentry.init({
+Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   integrations: [
     new Integrations.BrowserTracing(),
