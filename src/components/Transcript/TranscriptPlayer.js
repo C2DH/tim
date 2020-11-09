@@ -71,7 +71,7 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set}) =
           </TooltipTrigger>
         </Flex>
       </View>
-      <View width="size-5000" UNSAFE_style={{ overflowY: 'scroll' }}>
+      <View UNSAFE_style={{ overflowY: 'scroll' }}>
         <div className={`transcript timecodes-${timecodesVisible}`} onClick={handleClick} onCopy={handleCopy}>
           <Karaoke transcript={transcript} />
           {transcript.map(({ id, start, end, items }) => {

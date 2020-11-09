@@ -41,9 +41,11 @@ const App = () => {
               <Player ref={player} />
             </View>
             {transcriptVisible ? (      
-              <Flex direction="column" gap="size-100" height="100%" width="100%" flex>        
-                <Transcript player={player} />
-              </Flex>
+              <View width="size-5000">
+                <Flex direction="column" gap="size-100" height="100%" flex>        
+                  <Transcript player={player} />
+                </Flex>
+              </View>
             ) : null}
 
             <Switch>
@@ -51,13 +53,13 @@ const App = () => {
                 <CreateNote />
               </Route>
               <Route exact path="/notes/:id">
-                <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
+                <Flex direction="column" gap="size-100" height="100%" flex>
                   <Tabs selected="notes" />
                   <Notes player={player} />
                 </Flex>
               </Route>
               <Route path="/metadata/:id">
-                <Flex direction="column" gap="size-100" height="100%" width="100%" flex>
+                <Flex direction="column" gap="size-100" height="100%" flex>
                   <Tabs selected="metadata" />
                   <Metadata player={player} />
                 </Flex>
