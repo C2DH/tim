@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { atom, useRecoilState } from 'recoil';
 
@@ -25,13 +25,15 @@ const Tabs = ({ data: { items }, selected }) => {
 
   const [transcriptVisible, setTranscriptVisible] = useRecoilState(transcriptVisibleState);
 
+  const tabNav = useCallback(selection => selection.size === 1 && history.push(`/${[...selection].pop()}/${id}`), [history]); 
+
   return (
     <View>
       <Flex direction="row" marginX="size-200" gap="size-100">
         <ActionGroup
           selectionMode="single"
           selectedKeys={[selected]}
-          onSelectionChange={selection => history.push(`/${[...selection].pop()}/${id}`)}
+          onSelectionChange={tabNav}
         >
           <Item key="notes">Notes</Item>
           <Item key="metadata">Preview</Item>
