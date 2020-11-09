@@ -125,7 +125,7 @@ const CreateNote = ({ data: { items = [] }, add }) => {
             validationState={format === '' || isValid ? 'valid' : 'invalid'}
           >
             <Section title="Document">
-            <Item key="text">plain text</Item>
+            <Item key="text">Plain text</Item>
             <Item key="rtf">Rich Text Format</Item>
             <Item key="docx">Word</Item>
             </Section>

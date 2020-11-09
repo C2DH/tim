@@ -80,6 +80,8 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
         Synopsis
         <TextareaAutosize value={synopsis} onChange={setSynopsis} onClick={seekTimecode} />
       </label>
+      <TextField label="Keywords" value={keywords} width="100%" onChange={setKeywords} />
+      <br />
       <label>
         <span onClick={() => setCollapsed(!collapsed)}>
           {collapsed ? <TreeExpand size="XS" /> : <TreeCollapse size="XS" />}
@@ -87,7 +89,6 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
         Notes
         {collapsed ? null : <TextareaAutosize value={notes} onChange={setNotes} onClick={seekTimecode} />}
       </label>
-      <TextField label="Keywords" value={keywords} width="100%" onChange={setKeywords} />
     </div>
   );
 };

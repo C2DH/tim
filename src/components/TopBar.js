@@ -62,7 +62,7 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
         <TextField aria-label="name" isQuiet flex={1} value={title} isDisabled={!item} onChange={setTitle} />
 
         <TooltipTrigger delay={0}>
-          <ActionButton isQuiet aria-label="New" onPress={() => history.push('/')}>
+          <ActionButton isQuiet aria-label="New" onPress={() => window.open('/#/new')}>
             <NewItem />
           </ActionButton>
           <Tooltip>Create or import project</Tooltip>
