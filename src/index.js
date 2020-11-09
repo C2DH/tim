@@ -13,10 +13,10 @@ import * as serviceWorker from './serviceWorker';
 
 import './index.css';
 
-console.log('process.env.NEXT_PUBLIC_SENTRY_DSN', process.env.NEXT_PUBLIC_SENTRY_DSN);
+console.log('process.env.REACT_APP_SENTRY_DSN', process.env.REACT_APP_SENTRY_DSN);
 
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+process.env.REACT_APP_SENTRY_DSN && Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [
     new Integrations.BrowserTracing(),
   ],
