@@ -13,7 +13,7 @@ import {
   Checkbox,
   TextField,
   TooltipTrigger,
-  Tooltip, Text
+  Tooltip
 } from '@adobe/react-spectrum';
 
 import SettingsIcon from '@spectrum-icons/workflow/Settings';
@@ -61,9 +61,6 @@ const Settings = ({
               value={timecodeInterval}
               onChange={setTimecodeInterval}
             />
-            <ActionButton aria-label="test errot" onPress={() => {throw new Error('test');}}>
-              <Text>Test Error</Text>
-            </ActionButton>
           </Content>
         </Dialog>
       </DialogTrigger>

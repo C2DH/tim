@@ -1,8 +1,11 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 import { save, load } from 'redux-localstorage-simple';
+// import * as Sentry from "@sentry/react";
 
 import rootReducer from './reducers';
+
+// const sentryReduxEnhancer = Sentry.createReduxEnhancer({});
 
 if (localStorage.getItem('TIM-06_data')) localStorage.clear();
 
