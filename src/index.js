@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import { HashRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import { Provider as SpectrumProvider, defaultTheme } from '@adobe/react-spectrum';
 
 import App from './App';
@@ -10,6 +12,14 @@ import { configureAppStore } from './configureStore';
 import * as serviceWorker from './serviceWorker';
 
 import './index.css';
+
+process.env.NEXT_PUBLIC_SENTRY_DSN && Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  integrations: [
+    new Integrations.BrowserTracing(),
+  ],
+  tracesSampleRate: 1.0,
+});
 
 const store = configureAppStore({});
 
