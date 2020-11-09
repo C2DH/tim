@@ -36,7 +36,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
   
-  const setTranscript = useCallback(value => set([id, 'transcript', value]), [set]);
+  const setTranscript = useCallback(value => set([id, 'transcript', value]), [set, id]);
 
   useEffect(() => {
     const validate = async () => {
@@ -44,7 +44,6 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
         await parse(text, format);
         setIsValid(true);
       } catch (error) {
-        console.error(error);
         setIsValid(false);
       }
     };
