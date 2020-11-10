@@ -7,6 +7,8 @@ import { DOMParser, XMLSerializer } from 'xmldom';
 // from https://github.com/cookpete/react-player/blob/master/src/patterns.js#L3
 const MATCH_URL_YOUTUBE = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})|youtube\.com\/playlist\?list=|youtube\.com\/user\//;
 
+const OHMSNS = 'https://www.weareavp.com/nunncenter/ohms';
+
 /**
  * Generates webVTT timestamp
  *
@@ -79,23 +81,23 @@ const exportItem = (item, format, partialTranscript) => {
 
       item.metadata.forEach(({ time, title, synopsis, notes, keywords }) => {
         console.log({ time, title, synopsis, notes, keywords });
-        const pointEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'point');
+        const pointEl = doc.createElementNS(OHMSNS, 'point');
 
-        const timeEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'time');
+        const timeEl = doc.createElementNS(OHMSNS, 'time');
         pointEl.appendChild(timeEl);
         timeEl.textContent = time;
 
-        const titleEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'title');
+        const titleEl = doc.createElementNS(OHMSNS, 'title');
         pointEl.appendChild(titleEl);
         titleEl.textContent = title;
 
-        const synopsisEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'synopsis');
+        const synopsisEl = doc.createElementNS(OHMSNS, 'synopsis');
         pointEl.appendChild(synopsisEl);
         synopsisEl.textContent = synopsis;
 
         if (partialTranscript) {
           const partialTranscriptEl = doc.createElementNS(
-            'https://www.weareavp.com/nunncenter/ohms',
+            OHMSNS,
             'partial_transcript'
           );
           pointEl.appendChild(partialTranscriptEl);
@@ -107,7 +109,7 @@ const exportItem = (item, format, partialTranscript) => {
           hostEl.textContent = 'YouTube';
         }
 
-        const keywordsEl = doc.createElementNS('https://www.weareavp.com/nunncenter/ohms', 'keywords');
+        const keywordsEl = doc.createElementNS(OHMSNS, 'keywords');
         pointEl.appendChild(keywordsEl);
         keywordsEl.textContent = keywords.split(',').join(';');
 

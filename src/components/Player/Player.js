@@ -162,32 +162,19 @@ const Player = ({ data: { items }, set, update }, ref) => {
                 aria-label="Choose media file"
               />
 
-              <Text>or</Text>
-              <DialogTrigger type="popover">
-                <ActionButton isDisabled={!item}>URL</ActionButton>
-                {close => (
-                  <Dialog>
-                    <Content>
-                      <TextField
-                        autoFocus
-                        label="URL"
-                        width="100%"
-                        value={text}
-                        onChange={setText}
-                        validationState={isValid ? 'valid' : 'invalid'}
-                      />
-                    </Content>
-                    <ButtonGroup>
-                      <Button variant="secondary" onPress={close}>
-                        Cancel
-                      </Button>
-                      <Button variant="cta" onPress={() => setUrl(text)} isDisabled={!isValid}>
-                        Load
-                      </Button>
-                    </ButtonGroup>
-                  </Dialog>
-                )}
-              </DialogTrigger>
+              <Text>or load URL</Text>
+
+              <TextField
+                autoFocus
+                aria-label="URL"
+                width="100%"
+                value={text}
+                onChange={setText}
+                validationState={text === '' ? null : isValid ? 'valid' : 'invalid'}
+              />
+              <Button variant="cta" onPress={() => setUrl(text)} isDisabled={!isValid || text === ''}>
+                Load
+              </Button>
             </Flex>
           </Content>
         </IllustratedMessage>
