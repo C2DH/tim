@@ -25,7 +25,7 @@ const Tabs = ({ data: { items }, selected }) => {
 
   const [transcriptVisible, setTranscriptVisible] = useRecoilState(transcriptVisibleState);
 
-  const tabNav = useCallback(selection => selection.size === 1 && history.push(`/${[...selection].pop()}/${id}`), [history]); 
+  const tabNav = useCallback(selection => selection.size === 1 && history.push(`/${[...selection].pop()}/${id}`), [history, id]); 
 
   return (
     <View>

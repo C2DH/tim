@@ -28,6 +28,7 @@ import NewItem from '@spectrum-icons/workflow/NewItem';
 import OpenRecent from '@spectrum-icons/workflow/OpenRecent';
 import SaveFloppy from '@spectrum-icons/workflow/SaveFloppy';
 import Export from '@spectrum-icons/workflow/Export';
+import HelpOutline from '@spectrum-icons/workflow/HelpOutline';
 
 import Timeline from './Player/Timeline';
 import Settings from './Settings';
@@ -146,6 +147,10 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
         </TooltipTrigger>
 
         <Settings />
+
+        <ActionButton isQuiet aria-label="Help" onPress={() => window.open('https://github.com/Laurian/tim/wiki')}>
+          <HelpOutline />
+        </ActionButton>
       </Flex>
 
       <Timeline {...{ player, item }} />

@@ -3,7 +3,7 @@ import timecode from 'smpte-timecode';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Switch as Toggle, Flex, View, Text, ActionButton, Heading, Tooltip, TooltipTrigger} from '@adobe/react-spectrum';
+import { Switch as Toggle, Flex, View, ActionButton, Heading, Tooltip, TooltipTrigger} from '@adobe/react-spectrum';
 import CloseCircle from '@spectrum-icons/workflow/CloseCircle';
 
 import Karaoke from './Karaoke';

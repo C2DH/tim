@@ -1,4 +1,5 @@
 /* eslint no-unused-expressions: 0 */
+/* eslinet no-sequences: 0 */
 import Prism from 'prismjs';
 import React, { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -287,11 +288,13 @@ const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, p
                 .forEach(delta => {
                   const tc = timecode((progress - delta * parseFloat(timecodeInterval)) * 1e3, 1e3);
                   const [hh, mm, ss, mmm] = tc.toString().split(':');
+                  console.warn('mmm', mmm);
                   tokens.push(`[${hh}:${mm}:${ss}]`);
                 });
 
             const tc = timecode(progress * 1e3, 1e3);
             const [hh, mm, ss, mmm] = tc.toString().split(':');
+            console.warn('mmm', mmm);
             tokens.push(`[${hh}:${mm}:${ss}]`);
 
             editor.insertText(tokens.join(' '));
@@ -299,7 +302,7 @@ const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, p
         }
       }
     },
-    [editor, progress]
+    [editor, progress, timecodeInterval]
   );
 
   const decorate = useCallback(([node, path]) => {

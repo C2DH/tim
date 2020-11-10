@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { atom, useRecoilState } from 'recoil';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
