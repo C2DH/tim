@@ -1,5 +1,5 @@
 /* eslint no-unused-expressions: 0 */
-/* eslinet no-sequences: 0 */
+/* eslint no-sequences: 0 */
 import Prism from 'prismjs';
 import React, { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
