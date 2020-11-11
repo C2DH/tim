@@ -27,9 +27,18 @@ const Karaoke = ({ transcript }) => {
     [segment, time]
   );
 
-  useEffect(() => item && document.querySelector(`span[data-item="${item.id}"]`)?.scrollIntoView({ block: 'center' }), [
-    item,
-  ]);
+  // useEffect(() => item && document.querySelector(`span[data-item="${item.id}"]`)?.scrollIntoView({ block: 'center' }), [
+  //   item,
+  // ]);
+
+  useEffect(() => {
+    if (!item) return;
+
+    const el = document.querySelector(`span[data-item="${item.id}"]`);
+    if (!el) return;
+
+    el.parentNode.parentNode.parentNode.scrollTop = el.offsetTop - window.innerHeight / 2;
+  }, [item]);
 
   return (
     <style scoped>
