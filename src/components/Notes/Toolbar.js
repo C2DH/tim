@@ -69,16 +69,16 @@ const Toolbar = () => {
         <Tooltip>Title</Tooltip>
       </TooltipTrigger>
       <TooltipTrigger delay={0} placement="left">
-        <Item key="keyword" aria-label="Keyword">
-          <ViewList />
-        </Item>
-        <Tooltip>Keyword</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger delay={0} placement="left">
         <Item key="synopsis" aria-label="Synopsis">
           <FileTxt />
         </Item>
         <Tooltip>Synopsis</Tooltip>
+      </TooltipTrigger>
+      <TooltipTrigger delay={0} placement="left">
+        <Item key="keyword" aria-label="Keyword">
+          <ViewList />
+        </Item>
+        <Tooltip>Keyword</Tooltip>
       </TooltipTrigger>
     </ActionGroup>
   );

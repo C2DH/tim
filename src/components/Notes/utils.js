@@ -2,6 +2,13 @@ import { v4 as uuidv4 } from 'uuid';
 import rtf2text from 'rtf2text';
 import mammoth from 'mammoth';
 
+/**
+ * parses various file formats to item format
+ *
+ * @param {file} file
+ * @param {string} format
+ * @returns {object} item
+ */
 export const parse = (file, format) => {
   switch (format) {
     case 'text':

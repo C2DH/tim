@@ -13,6 +13,12 @@ import { setMetadata } from '../../reducers/data';
 
 import './Metadata.css';
 
+/**
+ * parses timecode string to time
+ *
+ * @param {string} text
+ * @returns {number} time
+ */
 const string2time = text => {
   let [ss, mm, hh = '00'] = text.replace(/\[|\]/g, '').split(':').reverse();
   if (hh.length === 1) hh = `0${hh}`;
@@ -26,6 +32,11 @@ const string2time = text => {
   return tc.frameCount / 1e3;
 };
 
+/**
+ * matches several timecode regex patterns
+ *
+ * @param {string} text
+ */
 const matchTimecode = text =>
   [
     ...text.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\](?=\s+)/g)),
