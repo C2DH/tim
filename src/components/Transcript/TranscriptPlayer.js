@@ -3,7 +3,7 @@ import timecode from 'smpte-timecode';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Switch as Toggle, Flex, View, ActionButton, Heading, Tooltip, TooltipTrigger} from '@adobe/react-spectrum';
+import { Switch as Toggle, Flex, View, ActionButton, Heading, Tooltip, TooltipTrigger } from '@adobe/react-spectrum';
 import CloseCircle from '@spectrum-icons/workflow/CloseCircle';
 
 import Karaoke from './Karaoke';
@@ -11,7 +11,7 @@ import Karaoke from './Karaoke';
 import './TranscriptPlayer.css';
 import { set } from '../../reducers/data';
 
-const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set}) => {
+const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set }) => {
   const { id } = useParams();
 
   const [timecodesVisible, setTimecodesVisible] = useState(false);
@@ -58,8 +58,10 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set}) =
   return (
     <>
       <View>
-        <Flex direction="row"  gap="size-100">
-          <Heading level={4} marginY="4px" marginEnd="10px">Transcript</Heading>
+        <Flex direction="row" gap="size-100">
+          <Heading level={4} marginY="4px" marginEnd="10px">
+            Transcript
+          </Heading>
           <Toggle isSelected={timecodesVisible} onChange={setTimecodesVisible} flex>
             Show timecodes
           </Toggle>

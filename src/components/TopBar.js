@@ -21,7 +21,7 @@ import {
   Button,
   Picker,
   TooltipTrigger,
-  Tooltip
+  Tooltip,
 } from '@adobe/react-spectrum';
 
 import NewItem from '@spectrum-icons/workflow/NewItem';
@@ -117,9 +117,9 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
 
         <TooltipTrigger delay={0} isDisabled={exportIsVisible}>
           <DialogTrigger type="popover" onOpenChange={isOpen => setExportIsVisible(isOpen)}>
-              <ActionButton isQuiet aria-label="Export" isDisabled={!item}>
+            <ActionButton isQuiet aria-label="Export" isDisabled={!item}>
               <Export />
-              </ActionButton>
+            </ActionButton>
             {close => (
               <Dialog>
                 <Heading>Export</Heading>

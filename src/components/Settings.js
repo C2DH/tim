@@ -13,7 +13,7 @@ import {
   Checkbox,
   TextField,
   TooltipTrigger,
-  Tooltip
+  Tooltip,
 } from '@adobe/react-spectrum';
 
 import SettingsIcon from '@spectrum-icons/workflow/Settings';

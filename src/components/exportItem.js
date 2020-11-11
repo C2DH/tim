@@ -96,10 +96,7 @@ const exportItem = (item, format, partialTranscript) => {
         synopsisEl.textContent = synopsis;
 
         if (partialTranscript) {
-          const partialTranscriptEl = doc.createElementNS(
-            OHMSNS,
-            'partial_transcript'
-          );
+          const partialTranscriptEl = doc.createElementNS(OHMSNS, 'partial_transcript');
           pointEl.appendChild(partialTranscriptEl);
           partialTranscriptEl.textContent = notes;
         }

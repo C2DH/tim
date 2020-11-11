@@ -9,7 +9,7 @@ const punctuation = unicode({ General_Category: ['Punctuation'] }).toRegExp();
  *
  * @param {Object} data
  * @param {string} format
- * @return {Object} transcript 
+ * @return {Object} transcript
  */
 export const parse = (data, format) => {
   switch (format) {
