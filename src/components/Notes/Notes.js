@@ -273,8 +273,10 @@ const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, p
 
   const onKeyDown = useCallback(
     event => {
+      let once = false;
       for (const hotkey in HOTKEYS) {
-        if (isHotkey(hotkey, event)) {
+        if (!once && isHotkey(hotkey, event)) {
+          once = true;
           event.preventDefault();
 
           const mark = HOTKEYS[hotkey];
