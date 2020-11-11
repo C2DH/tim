@@ -113,7 +113,7 @@ const Player = ({ data: { items }, set, update }, ref) => {
 
   return item ? (
     url ? (
-      <Draggable handle=".drag-handle" positionOffset={{ x: '10px', y: '0' }} forwardedRef={ref}>
+      <Draggable handle=".drag-handle" positionOffset={{ x: '20px', y: '10px' }} forwardedRef={ref}>
         <ResizableBox width={300} height={194} minConstraints={[200, 113]} maxConstraints={[720, 480]}>
           <>
             <ReactPlayer

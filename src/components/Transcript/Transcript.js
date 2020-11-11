@@ -14,7 +14,7 @@ import {
   TextArea,
   Picker,
   Section,
-  View
+  View,
 } from '@adobe/react-spectrum';
 
 import NotFound from '@spectrum-icons/illustrations/NotFound';
@@ -24,17 +24,16 @@ import { update, set } from '../../reducers/data';
 import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
 
-
 const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
-  const {transcript} = item ?? {};
+  const { transcript } = item ?? {};
 
   const [file, setFile] = useState(null);
   const [text, setText] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
-  
+
   const setTranscript = useCallback(value => set([id, 'transcript', value]), [set, id]);
 
   useEffect(() => {
@@ -75,7 +74,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   return transcript ? (
     <TranscriptPlayer {...{ transcript, player, convertTimecodes }} />
   ) : (
-    <View>
+    <View width="size-5000">
       <Well marginX="size-500">
         <IllustratedMessage>
           <NotFound />
@@ -93,9 +92,16 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
                 ref={fileInput}
                 aria-label="Choose transcript file"
               />
-
+              <Text>{file ? `File: ${file.name}` : null}</Text>
               <Text>or paste here</Text>
-              <TextArea autoFocus aria-label="transcript content" isDisabled={!item} value={text} onChange={setText} />
+              <TextArea
+                autoFocus
+                aria-label="transcript content"
+                isDisabled={!item}
+                value={text}
+                onChange={setText}
+                width="100%"
+              />
               <Picker
                 isDisabled={!item}
                 label="Choose format"
@@ -118,7 +124,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
                 </Section>
               </Picker>
               <ActionButton isDisabled={!format || !isValid} onPress={loadTranscript}>
-                Load {file?.name}
+                Load
               </ActionButton>
             </Flex>
           </Content>
