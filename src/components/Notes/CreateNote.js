@@ -10,6 +10,14 @@ import { parse } from './utils';
 import { namespace } from '../../configureStore';
 
 const DEFAULT_NOTE = `[00:00:00]
+
+
+
+
+
+`;
+
+const TUTORIAL_NOTE = `[00:00:00]
 # I am a title. To create me, first type "#"
 
 >I am a synopsis of a segment. To create me, type shift+period. A segment is created by adding a timecode on its own line. It goes from the timecode above it until the next timecode or until the end of the media. A synopsis summarizes what a segment is about.
@@ -115,6 +123,24 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
     history.push(`/notes/${id}`);
   }, [add, history, items]);
 
+  const createTutorialNote = useCallback(() => {
+    const id = uuidv4();
+
+    add({
+      id,
+      title: `Untitled ${items.length + 1}`,
+      url: null,
+      notes: TUTORIAL_NOTE.split('\n').map(text => ({
+        children: [{ text }],
+      })),
+      metadata: [],
+      created: Date.now(),
+      updated: Date.now(),
+    });
+
+    history.push(`/notes/${id}`);
+  }, [add, history, items]);
+
   return (
     <Flex direction="row" gap="size-100">
       <Content>
@@ -122,6 +148,8 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
           <Heading>Create note</Heading>
           <Text>Start with</Text>
           <ActionButton onPress={createEmptyNote}>empty note</ActionButton>
+          <Text>or tutorial</Text>
+          <ActionButton onPress={createTutorialNote}>sample note</ActionButton>
           <Text>or import from document file or previously saved project JSON</Text>
           <ActionButton onPress={triggerFileInput}>Choose File</ActionButton>
           <input
