@@ -228,6 +228,7 @@ const dataSlice = createSlice({
       const index = state.items.findIndex(({ id }) => id === payload.id);
       if (index > 0) state.items.splice(index, 1);
       state.items.push(payload);
+
       return state;
     },
     setMetadata: (state, { payload: [id, index, key, value] }) => {
@@ -237,11 +238,19 @@ const dataSlice = createSlice({
       console.log(metadata2notes(state.items[idx].metadata));
       state.items[idx].notes = metadata2notes(state.items[idx].metadata);
       state.items[idx].updated = Date.now();
+
+      return state;
+    },
+    trim: () => state => {
+      state.items.sort(({ updated: a }, { updated: b }) => b - a);
+      state.items.pop();
+
+      return state;
     },
     reset: () => initialState,
   },
 });
 
 const { actions, reducer } = dataSlice;
-export const { update, set, setNotes, add, reset, setMetadata } = actions;
+export const { update, set, setNotes, add, reset, setMetadata, trim } = actions;
 export default reducer;

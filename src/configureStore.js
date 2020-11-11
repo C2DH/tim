@@ -1,13 +1,12 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 import { save, load } from 'redux-localstorage-simple';
-// import * as Sentry from "@sentry/react";
 
 import rootReducer from './reducers';
 
-// const sentryReduxEnhancer = Sentry.createReduxEnhancer({});
+export const namespace = 'TIM-07';
 
-if (localStorage.getItem('TIM-06_data')) localStorage.clear();
+// if (localStorage.getItem('TIM-06_data')) localStorage.clear();
 
 const logger = createLogger({
   predicate: (state, action) => !['update', 'timeupdate'].includes(action.type),
@@ -22,7 +21,7 @@ export const configureAppStore = preloadedState => {
     middleware: [
       logger,
       save({
-        namespace: 'TIM-07',
+        namespace,
         states: ['data'],
         debounce: 1000,
       }),
@@ -30,7 +29,7 @@ export const configureAppStore = preloadedState => {
     ],
     // preloadedState,
     preloadedState: load({
-      namespace: 'TIM-07',
+      namespace,
       states: ['data'],
       preloadedState,
     }),

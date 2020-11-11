@@ -5,8 +5,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section, View, Well } from '@adobe/react-spectrum';
 
-import { add } from '../../reducers/data';
+import { add, trim } from '../../reducers/data';
 import { parse } from './utils';
+import { namespace } from '../../configureStore';
 
 const DEFAULT_NOTE = `[00:00:00]
 # I am a title. To create me, first type "#"
@@ -36,12 +37,27 @@ You can also inject 4 timecodes at the same time by pressing cmd+shift+j. It wil
 
 `;
 
-const CreateNote = ({ data: { items = [] }, add }) => {
+const CreateNote = ({ data: { items = [] }, add, trim }) => {
   const history = useHistory();
 
+  const [gc, setGc] = useState(false);
   const [file, setFile] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const [format, setFormat] = useState('');
+
+  useEffect(() => {
+    if (gc) return;
+
+    try {
+      const data = localStorage.getItem(`${namespace}_data`);
+      localStorage.setItem('TEST', data);
+    } catch (e) {
+      localStorage.removeItem('TEST');
+      trim();
+    }
+
+    localStorage.removeItem('TEST');
+  }, [gc, setGc, trim]);
 
   useEffect(() => {
     const validate = async () => {
@@ -160,4 +176,4 @@ const CreateNote = ({ data: { items = [] }, add }) => {
   );
 };
 
-export default connect(({ data }) => ({ data }), { add })(CreateNote);
+export default connect(({ data }) => ({ data }), { add, trim })(CreateNote);
