@@ -145,13 +145,10 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
     <Flex direction="row" gap="size-100">
       <Content>
         <Flex direction="column" gap="size-50">
-          <Heading>Create note</Heading>
-          <Text>Start with</Text>
-          <ActionButton onPress={createEmptyNote}>empty note</ActionButton>
-          <Text>or tutorial</Text>
-          <ActionButton onPress={createTutorialNote}>sample note</ActionButton>
-          <Text>or import from document file or previously saved project JSON</Text>
-          <ActionButton onPress={triggerFileInput}>Choose File</ActionButton>
+          <Heading>Create</Heading>
+          <ActionButton onPress={createEmptyNote}>Empty project</ActionButton>
+          <ActionButton onPress={createTutorialNote}>Sample project</ActionButton>
+          <ActionButton onPress={triggerFileInput}>Import</ActionButton>
           <input
             type="file"
             accept="text/plain, *.txt, *.md, text/rtf, application/rtf, *.rtf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, *.docx, application/json, *.json"
