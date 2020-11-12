@@ -22,7 +22,7 @@ const TUTORIAL_NOTE = `[00:00:00]
 
 >I am a synopsis of a segment. To create me, type shift+period. A segment is created by adding a timecode on its own line. It goes from the timecode above it until the next timecode or until the end of the media. A synopsis summarizes what a segment is about.
 
-**I am a keyword. To create me surround a word or phrase with two asterixes** **keyword2** 
+**I am a keyword. To create me surround a word or phrase with two asterisks** **keyword2** 
 **keyword3, keyword4**
 
 I am free form notes in this segment.
@@ -163,7 +163,7 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
             validationState={format === '' || isValid ? 'valid' : 'invalid'}
           >
             <Section title="Document">
-              <Item key="text">Plain text</Item>
+              <Item key="text">Plain Text</Item>
               <Item key="rtf">Rich Text Format</Item>
               <Item key="docx">Word</Item>
             </Section>
