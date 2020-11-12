@@ -225,9 +225,12 @@ const dataSlice = createSlice({
       return state;
     },
     add: (state, { payload }) => {
-      const index = state.items.findIndex(({ id }) => id === payload.id);
+      let index = state.items.findIndex(({ id }) => id === payload.id);
       if (index > 0) state.items.splice(index, 1);
       state.items.push(payload);
+
+      index = state.items.findIndex(({ id }) => id === payload.id);
+      state.items[index].metadata = notes2metadata(state.items[index].notes);
 
       return state;
     },
