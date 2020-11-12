@@ -19,13 +19,20 @@ import {
 import SettingsIcon from '@spectrum-icons/workflow/Settings';
 
 const Settings = ({
-  data: { convertTimecodes = true, skipIncrement = 1, timecodeInterval = 1, partialTranscript = true },
+  data: {
+    convertTimecodes = true,
+    skipIncrement = 1,
+    timecodeInterval = 1,
+    partialTranscript = true,
+    subSecond = false,
+  },
   update,
 }) => {
   const setConvertTimecodes = useCallback(convertTimecodes => update({ convertTimecodes }), [update]);
   const setPartialTranscript = useCallback(partialTranscript => update({ partialTranscript }), [update]);
   const setSkipIncrement = useCallback(skipIncrement => update({ skipIncrement }), [update]);
   const setTimecodeInterval = useCallback(timecodeInterval => update({ timecodeInterval }), [update]);
+  const setSubSecond = useCallback(subSecond => update({ subSecond }), [update]);
 
   const [settingsIsVisible, setSettingsIsVisible] = useState(false);
 
@@ -44,6 +51,9 @@ const Settings = ({
             </Checkbox>
             <Checkbox isSelected={partialTranscript} onChange={setPartialTranscript}>
               Export Notes as Partial Transcript in OHMS XML
+            </Checkbox>
+            <Checkbox isSelected={subSecond} onChange={setSubSecond}>
+              Add sub-second timecodes
             </Checkbox>
             <TextField
               inputMode="numeric"
