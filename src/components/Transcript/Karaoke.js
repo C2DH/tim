@@ -27,10 +27,6 @@ const Karaoke = ({ transcript }) => {
     [segment, time]
   );
 
-  // useEffect(() => item && document.querySelector(`span[data-item="${item.id}"]`)?.scrollIntoView({ block: 'center' }), [
-  //   item,
-  // ]);
-
   useEffect(() => {
     if (!item) return;
 

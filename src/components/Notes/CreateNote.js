@@ -58,9 +58,8 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
 
     try {
       const data = localStorage.getItem(`${namespace}_data`);
-      localStorage.setItem('TEST', data);
+      if (data.length > 3000000) trim();
     } catch (e) {
-      localStorage.removeItem('TEST');
       trim();
     }
 
