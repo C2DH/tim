@@ -3,7 +3,19 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section, View, Well } from '@adobe/react-spectrum';
+import {
+  Heading,
+  Content,
+  ActionButton,
+  Text,
+  Flex,
+  Picker,
+  Item,
+  Section,
+  View,
+  Well,
+  Divider,
+} from '@adobe/react-spectrum';
 
 import { add, trim } from '../../reducers/data';
 import { parse } from './utils';
@@ -148,6 +160,7 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
           <Heading>Create</Heading>
           <ActionButton onPress={createEmptyNote}>Empty project</ActionButton>
           <ActionButton onPress={createTutorialNote}>Sample project</ActionButton>
+          <Divider size="S" marginY="size-100" />
           <ActionButton onPress={triggerFileInput}>Import</ActionButton>
           <input
             type="file"
