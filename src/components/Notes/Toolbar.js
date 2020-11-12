@@ -3,13 +3,10 @@ import { atom, useRecoilState, useRecoilValue } from 'recoil';
 // import { useEditor } from 'slate-react';
 // import { Editor, Node, Text, Range, createEditor } from 'slate';
 
-import { ActionGroup, Item, TooltipTrigger, Tooltip } from '@adobe/react-spectrum';
+import { ActionGroup, Item, TooltipTrigger, Tooltip, Text } from '@adobe/react-spectrum';
 
 // import Comment from '@spectrum-icons/workflow/Comment';
 import Clock from '@spectrum-icons/workflow/Clock';
-import TextParagraph from '@spectrum-icons/workflow/TextParagraph';
-import ViewList from '@spectrum-icons/workflow/ViewList';
-import FileTxt from '@spectrum-icons/workflow/FileTxt';
 
 const transcriptVisibleState = atom({
   key: 'transcriptVisible',
@@ -64,19 +61,19 @@ const Toolbar = () => {
       </TooltipTrigger>
       <TooltipTrigger delay={0} placement="left">
         <Item key="title" aria-label="Title">
-          <TextParagraph />
+          <Text>T</Text>
         </Item>
         <Tooltip>Title</Tooltip>
       </TooltipTrigger>
       <TooltipTrigger delay={0} placement="left">
         <Item key="synopsis" aria-label="Synopsis">
-          <FileTxt />
+          <Text>S</Text>
         </Item>
         <Tooltip>Synopsis</Tooltip>
       </TooltipTrigger>
       <TooltipTrigger delay={0} placement="left">
         <Item key="keyword" aria-label="Keyword">
-          <ViewList />
+          <Text>K</Text>
         </Item>
         <Tooltip>Keyword</Tooltip>
       </TooltipTrigger>
