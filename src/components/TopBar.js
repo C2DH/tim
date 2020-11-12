@@ -130,6 +130,7 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
                     <Item key="csv">CSV</Item>
                     <Item key="ohms">XML (OHMS)</Item>
                     <Item key="vtt">VTT</Item>
+                    <Item key="json">Project JSON</Item>
                   </Picker>
                 </Content>
                 <ButtonGroup>
