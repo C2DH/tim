@@ -2,7 +2,6 @@ import React, { forwardRef, useState, useMemo, useCallback, useRef } from 'react
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
-import { useHotkeys } from 'react-hotkeys-hook';
 
 import ReactPlayer from 'react-player';
 import { ResizableBox } from 'react-resizable';
@@ -111,8 +110,6 @@ const Player = ({ data: { items }, set, update }, ref) => {
 
   const fileInput = useRef(null);
   const triggerFileInput = useCallback(() => fileInput.current.click(), [fileInput]);
-
-  useHotkeys('ctrl+shift+/', () => console.log('PP'));
 
   return item ? (
     url ? (

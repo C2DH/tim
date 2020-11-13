@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
 import timecode from 'smpte-timecode';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import { update, set } from '../../reducers/data';
 
@@ -80,6 +81,10 @@ const Transport = ({ player, data: { items, skipIncrement = 1 }, set }) => {
   const setPlaybackRateAsFloat = useCallback(playbackRateString => setPlaybackRate(parseFloat(playbackRateString)), [
     setPlaybackRate,
   ]);
+
+  useHotkeys('esc', () => setPlaying(!playing), [playing, setPlaying]);
+  useHotkeys('ctrl+[', rwd, [rwd]);
+  useHotkeys('ctrl+]', ffw, [ffw]);
 
   return (
     <>

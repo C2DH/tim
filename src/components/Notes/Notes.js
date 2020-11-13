@@ -173,6 +173,9 @@ const HOTKEYS = {
   'ctrl+j': 'time',
   'shift+mod+j': 'times',
   'shift+ctrl+j': 'times',
+  esc: 'play-pause',
+  'ctrl+[': 'rwd',
+  'ctrl+]': 'ffw',
 };
 
 const progressState = atom({
@@ -187,6 +190,11 @@ const titleState = atom({
 
 const synopsisState = atom({
   key: 'synopsisState',
+  default: false,
+});
+
+const playState = atom({
+  key: 'playState',
   default: false,
 });
 
@@ -206,7 +214,13 @@ const isSynopsisActive = editor => {
   return !!synopsis;
 };
 
-const Notes = ({ data: { items, timecodeInterval = 1, subSecond = false }, update, set, setNotes, player }) => {
+const Notes = ({
+  data: { items, timecodeInterval = 1, subSecond = false, skipIncrement = 1 },
+  update,
+  set,
+  setNotes,
+  player,
+}) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { notes } = item ?? {};
@@ -214,11 +228,22 @@ const Notes = ({ data: { items, timecodeInterval = 1, subSecond = false }, updat
   const progress = useRecoilValue(progressState);
   const [, setIsTitle] = useRecoilState(titleState);
   const [, setIsSynopsis] = useRecoilState(synopsisState);
+  const [playing, setPlaying] = useRecoilState(playState);
 
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
+  const ffw = useCallback(() => player.current?.seekTo(progress + parseFloat(skipIncrement), 'seconds'), [
+    player,
+    progress,
+    skipIncrement,
+  ]);
+  const rwd = useCallback(() => player.current?.seekTo(progress - parseFloat(skipIncrement), 'seconds'), [
+    player,
+    progress,
+    skipIncrement,
+  ]);
 
   const handleClick = useCallback(
     event => {
@@ -299,10 +324,14 @@ const Notes = ({ data: { items, timecodeInterval = 1, subSecond = false }, updat
 
             editor.insertText(tokens.join(' '));
           }
+
+          if (mark === 'play-pause') setPlaying(!playing);
+          if (mark === 'rwd') rwd();
+          if (mark === 'ffw') ffw();
         }
       }
     },
-    [editor, progress, timecodeInterval, subSecond]
+    [editor, progress, timecodeInterval, subSecond, setPlaying, playing, ffw, rwd]
   );
 
   const decorate = useCallback(([node, path]) => {
