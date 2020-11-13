@@ -1,7 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 /* eslint no-sequences: 0 */
 import Prism from 'prismjs';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { connect } from 'react-redux';
@@ -13,11 +13,11 @@ import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, Text, createEditor, Range } from 'slate';
 import { withHistory } from 'slate-history';
 
-import { Flex, View, Content } from '@adobe/react-spectrum';
+import { Flex, View, Content, ActionGroup, Item, TooltipTrigger, Tooltip, Text as Label } from '@adobe/react-spectrum';
+import Clock from '@spectrum-icons/workflow/Clock';
 
 import { update, set, setNotes } from '../../reducers/data';
 import Leaf from './Leaf';
-import Toolbar from './Toolbar';
 
 import './Notes.css';
 
@@ -183,16 +183,6 @@ const progressState = atom({
   default: 0,
 });
 
-const titleState = atom({
-  key: 'titleState',
-  default: false,
-});
-
-const synopsisState = atom({
-  key: 'synopsisState',
-  default: false,
-});
-
 const playState = atom({
   key: 'playState',
   default: false,
@@ -226,8 +216,8 @@ const Notes = ({
   const { notes } = item ?? {};
 
   const progress = useRecoilValue(progressState);
-  const [, setIsTitle] = useRecoilState(titleState);
-  const [, setIsSynopsis] = useRecoilState(synopsisState);
+  const [isTitle, setIsTitle] = useState(false);
+  const [isSynopsis, setIsSynopsis] = useState(false);
   const [playing, setPlaying] = useRecoilState(playState);
 
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
@@ -284,13 +274,13 @@ const Notes = ({
       setIsTitle(isTitleActive(editor));
       setIsSynopsis(isSynopsisActive(editor));
 
-      const { selection } = editor;
-      const [start, end] = Range.edges(selection);
+      // const { selection } = editor;
+      // const [start, end] = Range.edges(selection);
 
-      console.log(selection, [start, end]);
+      // console.log(selection, [start, end]);
 
-      if (Range.isCollapsed(selection)) {
-      }
+      // if (Range.isCollapsed(selection)) {
+      // }
 
       setNotes([id, notes]);
     },
@@ -392,7 +382,7 @@ const Notes = ({
         }
       }
     },
-    [editor, progress, timecodeInterval, subSecond, setPlaying, playing, ffw, rwd, notes, setNotes]
+    [editor, progress, timecodeInterval, subSecond, setPlaying, playing, ffw, rwd, notes, setNotes, id]
   );
 
   const decorate = useCallback(([node, path]) => {
@@ -433,6 +423,22 @@ const Notes = ({
     return ranges;
   }, []);
 
+  const selected = useMemo(() => [...new Set([isTitle ? '.$title' : null, isSynopsis ? '.$synopsis' : null])], [
+    isTitle,
+    isSynopsis,
+  ]);
+
+  const setAction = useCallback(action => {
+    console.log(action);
+    switch (action) {
+      case 'foo':
+        // setTranscriptVisible(!transcriptVisible);
+        break;
+      default:
+        console.warn('unhandled action', action);
+    }
+  }, []);
+
   return notes ? (
     <Flex direction="row" gap="size-100" height="100%">
       <View flex UNSAFE_style={{ overflowY: 'scroll' }}>
@@ -445,7 +451,32 @@ const Notes = ({
         </Content>
       </View>
       <View margin="size-100">
-        <Toolbar />
+        <ActionGroup orientation="vertical" selectionMode="multiple" selectedKeys={selected} onAction={setAction}>
+          <TooltipTrigger delay={0} placement="left">
+            <Item key="timecode" aria-label="Timecode">
+              <Clock />
+            </Item>
+            <Tooltip>Timecode</Tooltip>
+          </TooltipTrigger>
+          <TooltipTrigger delay={0} placement="left">
+            <Item key="title" aria-label="Title">
+              <Label>T</Label>
+            </Item>
+            <Tooltip>Title</Tooltip>
+          </TooltipTrigger>
+          <TooltipTrigger delay={0} placement="left">
+            <Item key="synopsis" aria-label="Synopsis">
+              <Label>S</Label>
+            </Item>
+            <Tooltip>Synopsis</Tooltip>
+          </TooltipTrigger>
+          <TooltipTrigger delay={0} placement="left">
+            <Item key="keyword" aria-label="Keyword">
+              <Label>K</Label>
+            </Item>
+            <Tooltip>Keyword</Tooltip>
+          </TooltipTrigger>
+        </ActionGroup>
       </View>
     </Flex>
   ) : (
