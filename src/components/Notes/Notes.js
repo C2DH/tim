@@ -10,7 +10,7 @@ import { Redirect } from 'react-router-dom';
 
 import isHotkey from 'is-hotkey';
 import { Slate, Editable, withReact } from 'slate-react';
-import { Editor, Text, createEditor } from 'slate';
+import { Editor, Text, createEditor, Range } from 'slate';
 import { withHistory } from 'slate-history';
 
 import { Flex, View, Content } from '@adobe/react-spectrum';
@@ -232,6 +232,7 @@ const Notes = ({
 
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  window.editor = editor;
 
   const seekTo = useCallback(time => player.current?.seekTo(time, 'seconds'), [player]);
   const ffw = useCallback(() => player.current?.seekTo(progress + parseFloat(skipIncrement), 'seconds'), [
@@ -282,14 +283,14 @@ const Notes = ({
     notes => {
       setIsTitle(isTitleActive(editor));
       setIsSynopsis(isSynopsisActive(editor));
-      // const { selection } = editor;
-      // const [start, end] = Range.edges(selection);
 
-      // console.log(selection, [start, end]);
+      const { selection } = editor;
+      const [start, end] = Range.edges(selection);
 
-      // if (Range.isCollapsed(selection)) {
-      //   // ...
-      // }
+      console.log(selection, [start, end]);
+
+      if (Range.isCollapsed(selection)) {
+      }
 
       setNotes([id, notes]);
     },
@@ -307,6 +308,66 @@ const Notes = ({
           const mark = HOTKEYS[hotkey];
 
           if (mark.startsWith('time')) {
+            const { selection } = editor;
+
+            if (Range.isCollapsed(selection)) {
+              const [
+                {
+                  offset,
+                  path: [index],
+                },
+              ] = Range.edges(selection);
+
+              const {
+                children: [{ text }],
+              } = notes[index];
+
+              const token =
+                text.substring(0, offset).split(' ').pop() + text.substring(offset).split(' ').reverse().pop();
+
+              const matches = [
+                ...token.matchAll(new RegExp(/\[(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\]/g)),
+                ...token.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d):(?:[012345]\d)\]/g)),
+                ...token.matchAll(new RegExp(/\[(?:[012345]\d):(?:[012345]\d)\]/g)),
+                ...token.matchAll(new RegExp(/\[(?:\d):(?:[012345]\d)\]/g)),
+              ];
+
+              if (matches.length > 0) {
+                const notes2 = [...notes];
+
+                notes2[index] = {
+                  children: [
+                    {
+                      text: text.replace(token, token.replace(/\[|\]/g, '')),
+                    },
+                  ],
+                };
+                setNotes([id, notes2]);
+                return;
+              }
+
+              const matches2 = [
+                ...token.matchAll(new RegExp(/(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)/g)),
+                ...token.matchAll(new RegExp(/(?:\d):(?:[012345]\d):(?:[012345]\d)/g)),
+                ...token.matchAll(new RegExp(/(?:[012345]\d):(?:[012345]\d)/g)),
+                ...token.matchAll(new RegExp(/(?:\d):(?:[012345]\d)/g)),
+              ];
+
+              if (matches2.length > 0) {
+                const notes2 = [...notes];
+
+                notes2[index] = {
+                  children: [
+                    {
+                      text: text.replace(token, `[${token}]`),
+                    },
+                  ],
+                };
+                setNotes([id, notes2]);
+                return;
+              }
+            }
+
             const tokens = [];
 
             mark === 'times' &&
@@ -331,7 +392,7 @@ const Notes = ({
         }
       }
     },
-    [editor, progress, timecodeInterval, subSecond, setPlaying, playing, ffw, rwd]
+    [editor, progress, timecodeInterval, subSecond, setPlaying, playing, ffw, rwd, notes, setNotes]
   );
 
   const decorate = useCallback(([node, path]) => {
