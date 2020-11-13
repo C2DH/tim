@@ -24,7 +24,7 @@ import { update, set } from '../../reducers/data';
 import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
 
-const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
+const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { transcript } = item ?? {};
@@ -72,7 +72,7 @@ const Transcript = ({ data: { items, convertTimecodes }, player, set }) => {
   ]);
 
   return transcript ? (
-    <TranscriptPlayer {...{ transcript, player, convertTimecodes }} />
+    <TranscriptPlayer {...{ transcript, player, convertTimecodes, subSecond }} />
   ) : (
     <View width="size-5000">
       <Well marginX="size-500">

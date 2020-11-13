@@ -11,7 +11,7 @@ import Karaoke from './Karaoke';
 import './TranscriptPlayer.css';
 import { set } from '../../reducers/data';
 
-const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set }) => {
+const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, subSecond = false, set }) => {
   const { id } = useParams();
 
   const [timecodesVisible, setTimecodesVisible] = useState(false);
@@ -46,13 +46,18 @@ const TranscriptPlayer = ({ transcript, player, convertTimecodes = true, set }) 
 
       if (!isNaN(start)) {
         const tc = timecode(start * 1e3, 1e3);
-        const [hh, mm, ss] = tc.toString().split(':');
+        const [hh, mm, ss, mmm] = tc.toString().split(':');
 
-        event.clipboardData.setData('text/plain', `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`);
+        event.clipboardData.setData(
+          'text/plain',
+          subSecond
+            ? `[${hh}:${mm}:${ss}.${mmm}] ${selection.toString().trim()}`
+            : `[${hh}:${mm}:${ss}] ${selection.toString().trim()}`
+        );
         event.preventDefault();
       }
     },
-    [convertTimecodes]
+    [convertTimecodes, subSecond]
   );
 
   return (

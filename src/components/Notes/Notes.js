@@ -206,7 +206,7 @@ const isSynopsisActive = editor => {
   return !!synopsis;
 };
 
-const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, player }) => {
+const Notes = ({ data: { items, timecodeInterval = 1, subSecond = false }, update, set, setNotes, player }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { notes } = item ?? {};
@@ -290,21 +290,19 @@ const Notes = ({ data: { items, timecodeInterval = 1 }, update, set, setNotes, p
                 .forEach(delta => {
                   const tc = timecode((progress - delta * parseFloat(timecodeInterval)) * 1e3, 1e3);
                   const [hh, mm, ss, mmm] = tc.toString().split(':');
-                  console.warn('mmm', mmm);
-                  tokens.push(`[${hh}:${mm}:${ss}]`);
+                  tokens.push(subSecond ? `[${hh}:${mm}:${ss}.${mmm}]` : `[${hh}:${mm}:${ss}]`);
                 });
 
             const tc = timecode(progress * 1e3, 1e3);
             const [hh, mm, ss, mmm] = tc.toString().split(':');
-            console.warn('mmm', mmm);
-            tokens.push(`[${hh}:${mm}:${ss}]`);
+            tokens.push(subSecond ? `[${hh}:${mm}:${ss}.${mmm}]` : `[${hh}:${mm}:${ss}]`);
 
             editor.insertText(tokens.join(' '));
           }
         }
       }
     },
-    [editor, progress, timecodeInterval]
+    [editor, progress, timecodeInterval, subSecond]
   );
 
   const decorate = useCallback(([node, path]) => {
