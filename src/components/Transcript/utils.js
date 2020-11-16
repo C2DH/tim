@@ -225,8 +225,8 @@ export const parse = (data, format) => {
                 items: text.split(' ').map((text, index) => ({
                   text,
                   id: `i${segmentIndex}-${index}`,
-                  start,
-                  end,
+                  start: start / 1e3,
+                  end: end / 1e3,
                 })),
               }))
           );
