@@ -87,9 +87,17 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
       },
     }) => {
       if (files.length === 0) return;
-      // console.log(files[0]);
+      const extension = files[0].name.split('.').pop();
+      const extensions = ['txt', 'md', 'rtf', 'docx', 'json'];
+      const types = [
+        'text/plain',
+        'text/rtf',
+        'application/rtf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/json',
+      ];
 
-      setFile(files[0]);
+      if (extensions.includes(extension) || types.includes(files[0].type)) setFile(files[0]);
     },
     [setFile]
   );

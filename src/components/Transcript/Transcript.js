@@ -56,7 +56,6 @@ const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, play
       },
     }) => {
       if (files.length === 0) return;
-      console.log(files[0]);
       const extension = files[0].name.split('.').pop();
       const extensions = ['json', 'vtt', 'webvtt', 'srt', 'txt'];
       const types = ['application/json', 'text/vtt', 'text/srt', 'text/plain'];
