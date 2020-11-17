@@ -149,7 +149,11 @@ const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true
 
         <Settings />
 
-        <ActionButton isQuiet aria-label="Help" onPress={() => window.open('https://github.com/Laurian/tim/wiki')}>
+        <ActionButton
+          isQuiet
+          aria-label="Help"
+          onPress={() => window.open('https://github.com/Laurian/tim/wiki', 'noopener,noreferrer')}
+        >
           <HelpOutline />
         </ActionButton>
       </Flex>
