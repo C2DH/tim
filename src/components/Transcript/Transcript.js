@@ -42,6 +42,7 @@ const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, play
         await parse(text, format);
         setIsValid(true);
       } catch (error) {
+        console.error(error);
         setIsValid(false);
       }
     };
@@ -55,9 +56,15 @@ const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, play
       },
     }) => {
       if (files.length === 0) return;
+      console.log(files[0]);
+      const extension = files[0].name.split('.').pop();
+      const extensions = ['json', 'vtt', 'webvtt', 'srt', 'txt'];
+      const types = ['application/json', 'text/vtt', 'text/srt', 'text/plain'];
 
-      setText(await (await fetch(window.URL.createObjectURL(files[0]))).text());
-      setFile(files[0]);
+      if (extensions.includes(extension) || types.includes(files[0].type)) {
+        setText(await (await fetch(window.URL.createObjectURL(files[0]))).text());
+        setFile(files[0]);
+      }
     },
     [setText, setFile]
   );
@@ -87,7 +94,7 @@ const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, play
               </ActionButton>
               <input
                 type="file"
-                accept="text/*, application/json, *.json, text/vtt, *.vtt, *.webvtt, text/srt, *.srt, text/plain, *.txt"
+                // accept="text/*, application/json, *.json, text/vtt, *.vtt, *.webvtt, text/srt, *.srt, text/plain, *.txt"
                 onChange={loadFile}
                 ref={fileInput}
                 aria-label="Choose transcript file"
