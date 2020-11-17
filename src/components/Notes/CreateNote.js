@@ -3,19 +3,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  Heading,
-  Content,
-  ActionButton,
-  Text,
-  Flex,
-  Picker,
-  Item,
-  Section,
-  View,
-  Well,
-  Divider,
-} from '@adobe/react-spectrum';
+import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section, Divider } from '@adobe/react-spectrum';
 
 import { add, trim } from '../../reducers/data';
 import { parse } from './utils';

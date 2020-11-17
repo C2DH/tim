@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section, View, Well } from '@adobe/react-spectrum';
+import { View, Well } from '@adobe/react-spectrum';
 
 const Intro = () => (
   <View>
