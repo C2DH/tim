@@ -28,10 +28,10 @@ const App = () => {
   return (
     <Flex direction="column" gap="size-100" height="100vh">
       <Switch>
-        <Route exact path="/">
-          <Redirect to="/new" />
+        <Route exact path={['/', '/tim/']}>
+          <Redirect to="./new" />
         </Route>
-        <Route path={['/new', '/notes/:id', '/metadata/:id']}>
+        <Route path={['/new', '/notes/:id', '/metadata/:id', '/tim/new', '/tim/notes/:id', '/tim/metadata/:id']}>
           <View height="size-800">
             <TopBar player={player} />
           </View>
@@ -49,29 +49,29 @@ const App = () => {
             ) : null}
 
             <Switch>
-              <Route exact path="/new">
+              <Route exact path={['/new', '/tim/new']}>
                 <CreateNote />
               </Route>
-              <Route exact path="/notes/:id">
+              <Route exact path={['/notes/:id', '/tim/notes/:id']}>
                 <Flex direction="column" gap="size-100" height="100%" flex>
                   <Tabs selected="notes" />
                   <Notes player={player} />
                 </Flex>
               </Route>
-              <Route path="/metadata/:id">
+              <Route path={['/metadata/:id', '/tim/metadata/:id']}>
                 <Flex direction="column" gap="size-100" height="100%" flex>
                   <Tabs selected="metadata" />
                   <Metadata player={player} />
                 </Flex>
               </Route>
               <Route path="*">
-                <Redirect to="/" />
+                <Redirect to="/tim" />
               </Route>
             </Switch>
           </Flex>
         </Route>
         <Route path="*">
-          <Redirect to="/" />
+          <Redirect to="/tim" />
         </Route>
       </Switch>
     </Flex>
