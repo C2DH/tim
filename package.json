@@ -2,6 +2,7 @@
   "name": "tim",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@adobe/react-spectrum": "^3.5.0",
     "@reduxjs/toolkit": "^1.4.0",
