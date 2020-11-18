@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint no-unused-expressions: 0 */
 /* eslint no-sequences: 0 */
 import Prism from 'prismjs';
@@ -428,21 +429,21 @@ const Notes = ({
     return ranges;
   }, []);
 
-  const selected = useMemo(() => [...new Set([isTitle ? '.$title' : null, isSynopsis ? '.$synopsis' : null])], [
-    isTitle,
-    isSynopsis,
-  ]);
+  // const selected = useMemo(() => [...new Set([isTitle ? '.$title' : null, isSynopsis ? '.$synopsis' : null])], [
+  //   isTitle,
+  //   isSynopsis,
+  // ]);
 
-  const setAction = useCallback(action => {
-    console.log(action);
-    switch (action) {
-      case 'foo':
-        // setTranscriptVisible(!transcriptVisible);
-        break;
-      default:
-        console.warn('unhandled action', action);
-    }
-  }, []);
+  // const setAction = useCallback(action => {
+  //   console.log(action);
+  //   switch (action) {
+  //     case 'foo':
+  //       // setTranscriptVisible(!transcriptVisible);
+  //       break;
+  //     default:
+  //       console.warn('unhandled action', action);
+  //   }
+  // }, []);
 
   return notes ? (
     <Flex direction="row" gap="size-100" height="100%">
@@ -455,7 +456,7 @@ const Notes = ({
           </div>
         </Content>
       </View>
-      <View margin="size-100">
+      {/*<View margin="size-100">
         <ActionGroup orientation="vertical" selectionMode="multiple" selectedKeys={selected} onAction={setAction}>
           <TooltipTrigger delay={0} placement="left">
             <Item key="timecode" aria-label="Timecode">
@@ -482,7 +483,7 @@ const Notes = ({
             <Tooltip>Keyword</Tooltip>
           </TooltipTrigger>
         </ActionGroup>
-      </View>
+  </View>*/}
     </Flex>
   ) : (
     <Redirect to="/new" />
