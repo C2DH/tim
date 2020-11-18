@@ -3,7 +3,18 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Heading, Content, ActionButton, Text, Flex, Picker, Item, Section, Divider } from '@adobe/react-spectrum';
+import {
+  Heading,
+  Content,
+  ActionButton,
+  Text,
+  Flex,
+  Picker,
+  Item,
+  Section,
+  Divider,
+  Well,
+} from '@adobe/react-spectrum';
 
 import { add, trim } from '../../reducers/data';
 import { parse } from './utils';
@@ -152,39 +163,41 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
   return (
     <Flex direction="row" gap="size-100">
       <Content>
-        <Flex direction="column" gap="size-50">
-          <Heading>Create</Heading>
-          <ActionButton onPress={createEmptyNote}>Empty project</ActionButton>
-          <ActionButton onPress={createTutorialNote}>Sample project</ActionButton>
-          <Divider size="S" marginY="size-100" />
-          <ActionButton onPress={triggerFileInput}>Import</ActionButton>
-          <input
-            type="file"
-            accept="text/plain, *.txt, *.md, text/rtf, application/rtf, *.rtf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, *.docx, application/json, *.json"
-            onChange={loadFile}
-            ref={fileInput}
-            aria-label="Choose file"
-          />
-          <Text>{file ? `File: ${file.name}` : null}</Text>
-          <Picker
-            label="Choose file format"
-            selectedKey={format}
-            onSelectionChange={setFormat}
-            validationState={format === '' || isValid ? 'valid' : 'invalid'}
-          >
-            <Section title="Document">
-              <Item key="text">Plain Text</Item>
-              <Item key="rtf">Rich Text Format</Item>
-              <Item key="docx">Word</Item>
-            </Section>
-            <Section title="Project">
-              <Item key="json">JSON</Item>
-            </Section>
-          </Picker>
-          <ActionButton isDisabled={!format || !isValid} onPress={createNote}>
-            Load
-          </ActionButton>
-        </Flex>
+        <Well marginX="size-500">
+          <Flex direction="column" gap="size-50">
+            <Heading>Create</Heading>
+            <ActionButton onPress={createEmptyNote}>Empty project</ActionButton>
+            <ActionButton onPress={createTutorialNote}>Sample project</ActionButton>
+            <Divider size="S" marginY="size-100" />
+            <ActionButton onPress={triggerFileInput}>Import</ActionButton>
+            <input
+              type="file"
+              accept="text/plain, *.txt, *.md, text/rtf, application/rtf, *.rtf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, *.docx, application/json, *.json"
+              onChange={loadFile}
+              ref={fileInput}
+              aria-label="Choose file"
+            />
+            <Text>{file ? `File: ${file.name}` : null}</Text>
+            <Picker
+              label="Choose file format"
+              selectedKey={format}
+              onSelectionChange={setFormat}
+              validationState={format === '' || isValid ? 'valid' : 'invalid'}
+            >
+              <Section title="Document">
+                <Item key="text">Plain Text</Item>
+                <Item key="rtf">Rich Text Format</Item>
+                <Item key="docx">Word</Item>
+              </Section>
+              <Section title="Project">
+                <Item key="json">JSON</Item>
+              </Section>
+            </Picker>
+            <ActionButton isDisabled={!format || !isValid} onPress={createNote}>
+              Load
+            </ActionButton>
+          </Flex>
+        </Well>
       </Content>
       <Intro />
     </Flex>
