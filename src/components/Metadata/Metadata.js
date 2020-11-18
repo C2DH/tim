@@ -104,8 +104,8 @@ const Segment = ({ title, time, timecode, synopsis, notes, keywords, index, id, 
   );
 };
 
-const Metadata = ({ data, setMetadata, player }) => {
-  const { items } = data;
+const Metadata = ({ data = {}, setMetadata, player }) => {
+  const { items = [] } = data;
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 

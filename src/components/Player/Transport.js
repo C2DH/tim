@@ -41,7 +41,7 @@ const playbackRateState = atom({
   default: 1,
 });
 
-const Transport = ({ player, data: { items, skipIncrement = 1 }, set }) => {
+const Transport = ({ player, data: { items = [], skipIncrement = 1 }, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
 

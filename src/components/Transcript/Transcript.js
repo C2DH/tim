@@ -24,7 +24,7 @@ import { update, set } from '../../reducers/data';
 import TranscriptPlayer from './TranscriptPlayer';
 import { parse } from './utils';
 
-const Transcript = ({ data: { items, convertTimecodes, subSecond = false }, player, set }) => {
+const Transcript = ({ data: { items = [], convertTimecodes, subSecond = false }, player, set }) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { transcript } = item ?? {};

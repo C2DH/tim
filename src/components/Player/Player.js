@@ -52,7 +52,7 @@ const playbackRateState = atom({
   default: 1,
 });
 
-const Player = ({ data: { items }, set, update }, ref) => {
+const Player = ({ data: { items = [] }, set, update }, ref) => {
   const { id } = useParams();
   const item = useMemo(() => items.find(({ id: _id }) => id === _id), [items, id]);
   const { url } = item ?? {};

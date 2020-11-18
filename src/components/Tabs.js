@@ -12,7 +12,7 @@ const transcriptVisibleState = atom({
   default: false,
 });
 
-const Tabs = ({ data: { items }, selected }) => {
+const Tabs = ({ data: { items = [] }, selected }) => {
   const history = useHistory();
   const { id } = useParams();
 

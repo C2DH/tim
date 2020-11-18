@@ -206,7 +206,7 @@ const isSynopsisActive = editor => {
 };
 
 const Notes = ({
-  data: { items, timecodeInterval = 1, subSecond = false, skipIncrement = 1 },
+  data: { items = [], timecodeInterval = 1, subSecond = false, skipIncrement = 1 },
   update,
   set,
   setNotes,
