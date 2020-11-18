@@ -33,7 +33,7 @@ import HelpOutline from '@spectrum-icons/workflow/HelpOutline';
 import Timeline from './Player/Timeline';
 import Settings from './Settings';
 
-const TopBar = ({ player, data: { items, skipIncrement, partialTranscript = true }, set }) => {
+const TopBar = ({ player, data: { items = [], skipIncrement, partialTranscript = true }, set }) => {
   const history = useHistory();
   const { id } = useParams();
 
