@@ -16,8 +16,13 @@ const OHMSNS = 'https://www.weareavp.com/nunncenter/ohms';
  * @return {string} hh:mm:ss.mmm timecode
  */
 const time2vtt = time => {
-  const tc = new timecode(time, 1e3);
-  const [hh, mm, ss, mmm] = tc.toString().split(':');
+  const tc = new timecode(time * 1e3, 1e3);
+  let [hh, mm, ss, mmm] = tc.toString().split(':');
+  console.log([hh, mm, ss, mmm]);
+
+  mmm = `${mmm}`;
+  if (mmm.length === 1) mmm = `00${mmm}`;
+  if (mmm.length === 2) mmm = `0${mmm}`;
 
   return `${hh}:${mm}:${ss}.${mmm}`;
 };
@@ -117,12 +122,14 @@ const exportItem = (item, format, partialTranscript) => {
       break;
 
     case 'vtt':
-      const segments = item.metadata.map(({ time: start, title, synopsis: text }, index, array) => ({
-        start,
-        end: index < array.length - 1 ? array[index + 1].time : start + 3600,
-        title,
-        text,
-      }));
+      const segments = [...item.metadata]
+        .sort(({ time: a }, { time: b }) => a - b)
+        .map(({ time: start, title, synopsis: text }, index, array) => ({
+          start,
+          end: index < array.length - 1 ? array[index + 1].time : start + 3600,
+          title,
+          text,
+        }));
       const vtt = [
         'WEBVTT',
         ...segments.map(({ title, start, end, text }) =>

@@ -370,7 +370,12 @@ const Notes = ({
                 });
 
             const tc = timecode(progress * 1e3, 1e3);
-            const [hh, mm, ss, mmm] = tc.toString().split(':');
+            let [hh, mm, ss, mmm] = tc.toString().split(':');
+
+            mmm = `${mmm}`;
+            if (mmm.length === 1) mmm = `00${mmm}`;
+            if (mmm.length === 2) mmm = `0${mmm}`;
+
             tokens.push(subSecond ? `[${hh}:${mm}:${ss}.${mmm}]` : `[${hh}:${mm}:${ss}]`);
 
             editor.insertText(tokens.join(' '));
