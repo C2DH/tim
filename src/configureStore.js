@@ -6,7 +6,10 @@ import rootReducer from './reducers';
 
 export const namespace = 'TIM-07';
 
-// if (localStorage.getItem('TIM-06_data')) localStorage.clear();
+if (!localStorage.getItem(`${namespace}_data`) || localStorage.getItem(`${namespace}_data`) === 'undefined') {
+  localStorage.setItem(`${namespace}_data`, '{"items":[]}');
+  console.log(localStorage.getItem(`${namespace}_data`));
+}
 
 const logger = createLogger({
   predicate: (state, action) => !['update', 'timeupdate'].includes(action.type),
@@ -27,11 +30,11 @@ export const configureAppStore = preloadedState => {
       }),
       ...getDefaultMiddleware(),
     ],
-    // preloadedState,
     preloadedState: load({
       namespace,
       states: ['data'],
       preloadedState,
+      disableWarnings: false,
     }),
     devTools:
       process.env.NODE_ENV !== 'production'

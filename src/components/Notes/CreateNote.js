@@ -166,7 +166,7 @@ const CreateNote = ({ data: { items = [] }, add, trim }) => {
         <Well marginX="size-500">
           <Flex direction="column" gap="size-50">
             <Heading>Create</Heading>
-            <ActionButton onPress={createEmptyNote}>Empty project</ActionButton>
+            <ActionButton onPress={createEmptyNote}>New project</ActionButton>
             <ActionButton onPress={createTutorialNote}>Sample project</ActionButton>
             <Divider size="S" marginY="size-100" />
             <ActionButton onPress={triggerFileInput}>Import</ActionButton>
