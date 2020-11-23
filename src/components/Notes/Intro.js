@@ -45,7 +45,7 @@ const Intro = () => (
     </p>
     <p>
       Many thanks to TIM developers Mark Boas and Laurian Gridinoc at{' '}
-      <a href="https://hyperaud.io/" target="_blank" rel="noopener noreferrer">
+      <a href="https://hyper.audio/" target="_blank" rel="noopener noreferrer">
         Hyperaudio
       </a>
       , to whom we owe an enormous debt of gratitude for taking our project on, and for delivering far beyond what was
