@@ -68,7 +68,7 @@ const Intro = () => (
           style={{ verticalAlign: 'middle', marginRight: 30 }}
         />
       </a>
-      <a href="https://hyperaud.io/" target="_blank" rel="noopener noreferrer">
+      <a href="https://hyper.audio/" target="_blank" rel="noopener noreferrer">
         <img src="assets/hyperaudio.svg" alt="Hyperaudio logo" height="30" style={{ verticalAlign: 'middle' }} />
       </a>
     </div>
